@@ -22,4 +22,9 @@ public class TodoService {
     public List<Todo> getAllTodos(){
         return  repository.findAll();
     }
+
+    @Transactional(readOnly = false)
+    public void saveNewTodo(Todo todo){
+        repository.save(todo);
+    }
 }
