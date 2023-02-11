@@ -1,7 +1,7 @@
-package com.app.services;
+package com.api.services;
 
-import com.app.model.Todo;
-import com.app.repositories.TodosRepository;
+import com.api.model.Todo;
+import com.api.repositories.TodosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

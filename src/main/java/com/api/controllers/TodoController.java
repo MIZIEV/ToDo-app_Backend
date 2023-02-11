@@ -1,9 +1,8 @@
-package com.app.controllers;
+package com.api.controllers;
 
-import com.app.model.Todo;
-import com.app.services.TodoService;
+import com.api.model.Todo;
+import com.api.services.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/todo")
+@RequestMapping("/api")
+@CrossOrigin("http://localhost:3000")
 public class TodoController {
 
     private final TodoService service;
@@ -21,15 +21,14 @@ public class TodoController {
         this.service = service;
     }
 
-    @GetMapping("/alltodos")
+    @GetMapping("/todos")
     public List<Todo> getAllTodos() {
         return service.getAllTodos();
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<HttpStatus> saveTodo(@RequestBody Todo todo) {
         service.saveNewTodo(todo);
         return ResponseEntity.ok(HttpStatus.OK);
-
     }
 }
