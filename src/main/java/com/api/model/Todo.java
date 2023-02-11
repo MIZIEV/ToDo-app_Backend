@@ -19,16 +19,15 @@ public class Todo {
     @Column(name = "todo_unique_key")
     private String todoUniqueKey;
 
-    public Todo() {}
-
-    public Todo(String text) { this.text = text; }
-
-    public String getTodoUniqueKey() {
-        return todoUniqueKey;
+    public Todo() {
     }
 
-    public void setTodoUniqueKey(String todoUniqueKey) {
-        this.todoUniqueKey = todoUniqueKey;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getText() {
@@ -39,16 +38,24 @@ public class Todo {
         this.text = text;
     }
 
-    public boolean isCompleted() { return isCompleted; }
+    public boolean isCompleted() {
+        return isCompleted;
+    }
 
-    public void setCompleted(boolean completed) { isCompleted = completed; }
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
+    }
 
-    public String getId() { return todoUniqueKey; }
+    public String getTodoUniqueKey() {
+        return todoUniqueKey;
+    }
 
-    public void setId(String id) { this.todoUniqueKey = id; }
+    public void setTodoUniqueKey(String todoUniqueKey) {
+        this.todoUniqueKey = todoUniqueKey;
+    }
 
     @Override
     public String toString() {
-        return todoUniqueKey + ") " + text + " isCompleted" + isCompleted + " id-" + todoUniqueKey;
+        return id + ") " + text + " isCompleted" + isCompleted + " id-" + todoUniqueKey;
     }
 }

@@ -19,12 +19,23 @@ public class TodoService {
         this.repository = repository;
     }
 
-    public List<Todo> getAllTodos(){
-        return  repository.findAll();
+    public List<Todo> getAllTodos() {
+        return repository.findAll();
+    }
+
+
+    @Transactional(readOnly = false)
+    public void updateTodo(String key) {
+
+
     }
 
     @Transactional(readOnly = false)
-    public void saveNewTodo(Todo todo){
+    public void saveNewTodo(Todo todo) {
         repository.save(todo);
+    }
+
+    public Todo getTodoByUniqueKey(String uniqueKey) {
+        return repository.findByTodoUniqueKey(uniqueKey);
     }
 }

@@ -26,6 +26,14 @@ public class TodoController {
         return service.getAllTodos();
     }
 
+    @PutMapping("/todo/{todoUniqueKey}")
+    public ResponseEntity<HttpStatus> updateTodo(@RequestBody Todo editedTodo, @PathVariable String todoUniqueKey) {
+        Todo oldTodo = service.getTodoByUniqueKey(todoUniqueKey);
+        oldTodo.setCompleted(editedTodo.isCompleted());
+        service.saveNewTodo(oldTodo);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> saveTodo(@RequestBody Todo todo) {
         service.saveNewTodo(todo);
