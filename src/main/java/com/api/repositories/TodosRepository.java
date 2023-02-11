@@ -1,9 +1,10 @@
-package com.app.repositories;
+package com.api.repositories;
 
-import com.app.model.Todo;
+import com.api.model.Todo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TodosRepository extends JpaRepository<Todo, Integer> {
+    Todo findByTodoUniqueKey(String todoUniqueKey);
 }
