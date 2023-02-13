@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -23,16 +24,24 @@ public class TodoService {
         return repository.findAll();
     }
 
-
-    @Transactional(readOnly = false)
-    public void updateTodo(String key) {
-
-
-    }
-
     @Transactional(readOnly = false)
     public void saveNewTodo(Todo todo) {
         repository.save(todo);
+    }
+
+    @Transactional(readOnly = false)
+    public void deleteTodo(String key) {
+        Todo todoForDelete = getTodoByUniqueKey((key));
+        repository.delete(todoForDelete);
+    }
+
+    @Transactional(readOnly = false)
+    public void deleteAllTodos(){
+        repository.deleteAll();
+    }
+    @Transactional(readOnly = false)
+    public void deleteCompletedTodo(List<Todo> todoList){
+        repository.deleteAll(todoList);
     }
 
     public Todo getTodoByUniqueKey(String uniqueKey) {
