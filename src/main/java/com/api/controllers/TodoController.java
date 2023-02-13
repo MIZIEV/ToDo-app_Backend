@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -47,8 +48,15 @@ public class TodoController {
     }
 
     @DeleteMapping("/todos/delete")
-    public ResponseEntity<HttpStatus> deleteAllTodos(){
+    public ResponseEntity<HttpStatus> deleteAllTodos() {
         service.deleteAllTodos();
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/todos/delete_completed")
+    public ResponseEntity<HttpStatus> deleteCompletedTodo(@RequestBody List<Todo> completedTodo) {
+        service.deleteCompletedTodo(completedTodo);
+
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }
