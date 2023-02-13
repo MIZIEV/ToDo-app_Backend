@@ -23,16 +23,20 @@ public class TodoService {
         return repository.findAll();
     }
 
-
-    @Transactional(readOnly = false)
-    public void updateTodo(String key) {
-
-
-    }
-
     @Transactional(readOnly = false)
     public void saveNewTodo(Todo todo) {
         repository.save(todo);
+    }
+
+    @Transactional(readOnly = false)
+    public void deleteTodo(String key) {
+        Todo todoForDelete = getTodoByUniqueKey((key));
+        repository.delete(todoForDelete);
+    }
+
+    @Transactional(readOnly = false)
+    public void deleteAllTodos(){
+        repository.deleteAll();
     }
 
     public Todo getTodoByUniqueKey(String uniqueKey) {

@@ -39,4 +39,16 @@ public class TodoController {
         service.saveNewTodo(todo);
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
+    @DeleteMapping("/todo/{todoUniqueKey}")
+    public ResponseEntity<HttpStatus> deleteTodo(@PathVariable String todoUniqueKey) {
+        service.deleteTodo(todoUniqueKey);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/todos/delete")
+    public ResponseEntity<HttpStatus> deleteAllTodos(){
+        service.deleteAllTodos();
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
 }
