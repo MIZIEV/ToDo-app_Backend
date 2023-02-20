@@ -1,6 +1,10 @@
 package com.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "todo")
@@ -18,6 +22,9 @@ public class Todo {
     private boolean isCompleted;
     @Column(name = "todo_unique_key")
     private String todoUniqueKey;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     public Todo() {
     }
@@ -54,8 +61,33 @@ public class Todo {
         this.todoUniqueKey = todoUniqueKey;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, text, isCompleted, todoUniqueKey, createdAt);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Todo todo = (Todo) obj;
+        return id == todo.id &&
+                isCompleted == todo.isCompleted &&
+                Objects.equals(text, todo.text) &&
+                Objects.equals(todoUniqueKey, todo.todoUniqueKey) &&
+                Objects.equals(createdAt, todo.createdAt);
+    }
+
     @Override
     public String toString() {
-        return id + ") " + text + " isCompleted" + isCompleted + " id-" + todoUniqueKey;
+        return id+") "+text + ", " + isCompleted + ", " + todoUniqueKey + ", " + createdAt;
     }
 }

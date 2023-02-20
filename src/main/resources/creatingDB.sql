@@ -5,5 +5,6 @@ create table todo
     id           int auto_increment primary key,
     text         varchar(200),
     is_completed boolean,
-    todo_unique_key     varchar(100)
+    todo_unique_key     varchar(100),
+    created_at timestamp
 );
