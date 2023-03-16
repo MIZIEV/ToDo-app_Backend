@@ -3,12 +3,15 @@ package com.api.controllers;
 import com.api.dto.TodoDTO;
 import com.api.model.Todo;
 import com.api.services.TodoService;
+import com.api.util.EmptyFieldException;
+import com.api.util.TodoErrorResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +40,9 @@ public class TodoController {
 
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> saveTodo(@RequestBody TodoDTO todoDTO) {
-        service.saveNewTodo(convertToTodo(todoDTO));
+
+            service.saveNewTodo(convertToTodo(todoDTO));
+
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
@@ -67,5 +72,12 @@ public class TodoController {
     private TodoDTO convertToTodoDTO(Todo todo) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(todo, TodoDTO.class);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<TodoErrorResponse> handleException(EmptyFieldException exception) {
+        TodoErrorResponse response = new TodoErrorResponse("Text field mustn't be empty!", LocalDateTime.now());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

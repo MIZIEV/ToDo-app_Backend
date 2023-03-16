@@ -2,6 +2,8 @@ package com.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -16,11 +18,13 @@ public class Todo {
     private int id;
 
     @Column(name = "text")
+    //@NotEmpty(message = "Text field mustn't be empty.")
     private String text;
 
     @Column(name = "is_completed")
     private boolean isCompleted;
     @Column(name = "todo_unique_key")
+    //@NotEmpty(message = "Key field mustn't be empty.")
     private String todoUniqueKey;
 
     @Column(name = "created_at")

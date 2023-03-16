@@ -2,6 +2,7 @@ package com.api.services;
 
 import com.api.model.Todo;
 import com.api.repositories.TodosRepository;
+import com.api.util.EmptyFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +27,12 @@ public class TodoService {
 
     @Transactional(readOnly = false)
     public void saveNewTodo(Todo todo) {
-        enrichTodo(todo);
-        repository.save(todo);
+        if (todo.getText() == null) {
+            throw new EmptyFieldException("EmptyFieldException: Field \"text\" is empty ");
+        } else {
+            enrichTodo(todo);
+            repository.save(todo);
+        }
     }
 
     @Transactional(readOnly = false)
