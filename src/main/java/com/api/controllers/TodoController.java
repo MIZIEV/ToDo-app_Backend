@@ -1,14 +1,19 @@
 package com.api.controllers;
 
+import com.api.dto.TodoDTO;
 import com.api.model.Todo;
 import com.api.services.TodoService;
+import com.api.util.EmptyFieldException;
+import com.api.util.TodoErrorResponse;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -23,21 +28,21 @@ public class TodoController {
     }
 
     @GetMapping("/todos")
-    public List<Todo> getAllTodos() {
-        return service.getAllTodos();
+    public List<TodoDTO> getAllTodos() {
+        return service.getAllTodos().stream().map(this::convertToTodoDTO).collect(Collectors.toList());
     }
 
     @PutMapping("/todo/{todoUniqueKey}")
     public ResponseEntity<HttpStatus> updateTodo(@RequestBody Todo editedTodo, @PathVariable String todoUniqueKey) {
-        Todo oldTodo = service.getTodoByUniqueKey(todoUniqueKey);
-        oldTodo.setCompleted(editedTodo.isCompleted());
-        service.saveNewTodo(oldTodo);
+        service.changeCompletedStatus(editedTodo, todoUniqueKey);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> saveTodo(@RequestBody Todo todo) {
-        service.saveNewTodo(todo);
+    public ResponseEntity<HttpStatus> saveTodo(@RequestBody TodoDTO todoDTO) {
+
+            service.saveNewTodo(convertToTodo(todoDTO));
+
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
@@ -54,9 +59,25 @@ public class TodoController {
     }
 
     @DeleteMapping("/todos/delete_completed")
-    public ResponseEntity<HttpStatus> deleteCompletedTodo(@RequestBody List<Todo> completedTodo) {
-        service.deleteCompletedTodo(completedTodo);
-
+    public ResponseEntity<HttpStatus> deleteCompletedTodo() {
+        service.deleteCompletedTodo();
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    private Todo convertToTodo(TodoDTO todoDTO) {
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(todoDTO, Todo.class);
+    }
+
+    private TodoDTO convertToTodoDTO(Todo todo) {
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(todo, TodoDTO.class);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<TodoErrorResponse> handleException(EmptyFieldException exception) {
+        TodoErrorResponse response = new TodoErrorResponse("Text field mustn't be empty!", LocalDateTime.now());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
