@@ -2,14 +2,16 @@ package com.api.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "todo_user")
+@Table(name = "user")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;
@@ -20,6 +22,9 @@ public class User {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<Todo> todoList;
 
     public User() {
     }

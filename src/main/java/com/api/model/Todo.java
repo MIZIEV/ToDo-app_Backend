@@ -30,6 +30,10 @@ public class Todo {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    private User user;
+
     public Todo() {
     }
 
