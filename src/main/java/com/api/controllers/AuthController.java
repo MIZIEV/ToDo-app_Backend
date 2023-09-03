@@ -1,5 +1,7 @@
 package com.api.controllers;
 
+import com.api.dto.JwtAuthResponse;
+import com.api.dto.LoginDto;
 import com.api.dto.RegisterDto;
 import com.api.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +25,10 @@ public class AuthController {
         String response = authService.register(registerDto);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto){
+
+        return null;
     }
 }

@@ -1,5 +1,7 @@
 package com.api.services.impl;
 
+import com.api.dto.JwtAuthResponse;
+import com.api.dto.LoginDto;
 import com.api.dto.RegisterDto;
 import com.api.model.User;
 import com.api.repositories.UserRepository;
@@ -32,5 +34,10 @@ public class AuthServiceImpl implements AuthService {
         repository.save(user);
 
         return "User registered successfully!!!";
+    }
+
+    @Override
+    public JwtAuthResponse login(LoginDto loginDto) {
+        return null;
     }
 }
