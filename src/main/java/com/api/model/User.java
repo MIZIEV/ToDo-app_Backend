@@ -26,8 +26,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Todo> todoList;
 
-    public User() {
-    }
+    private final  String ROLE = "ROLE_USER";
+
+    public User() {}
 
     public User(String name, String username, String email) {
         this.name = name;
@@ -74,6 +75,12 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public List<Todo> getTodoList() { return todoList; }
+
+    public void setTodoList(List<Todo> todoList) { this.todoList = todoList; }
+
+    public String getROLE() { return ROLE; }
 
     @Override
     public int hashCode() {
