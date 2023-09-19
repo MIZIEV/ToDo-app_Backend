@@ -10,6 +10,7 @@ public class TodoDTO {
     private String todoUniqueKey;
     private String username;
     private User todoOwner;
+    public TodoDTO(){}
     public TodoDTO(String text, boolean isCompleted, String todoUniqueKey, String username) {
         this.text = text;
         this.isCompleted = isCompleted;
