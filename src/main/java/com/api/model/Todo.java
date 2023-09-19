@@ -1,5 +1,6 @@
 package com.api.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -31,6 +32,7 @@ public class Todo {
     private LocalDateTime createdAt;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
 

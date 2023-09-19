@@ -1,5 +1,6 @@
 package com.api.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -24,11 +25,13 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     private List<Todo> todoList;
 
-    private final  String ROLE = "ROLE_USER";
+    private final String ROLE = "ROLE_USER";
 
-    public User() {}
+    public User() {
+    }
 
     public User(String name, String username, String email) {
         this.name = name;
@@ -76,11 +79,17 @@ public class User {
         this.password = password;
     }
 
-    public List<Todo> getTodoList() { return todoList; }
+    public List<Todo> getTodoList() {
+        return todoList;
+    }
 
-    public void setTodoList(List<Todo> todoList) { this.todoList = todoList; }
+    public void setTodoList(List<Todo> todoList) {
+        this.todoList = todoList;
+    }
 
-    public String getROLE() { return ROLE; }
+    public String getROLE() {
+        return ROLE;
+    }
 
     @Override
     public int hashCode() {
