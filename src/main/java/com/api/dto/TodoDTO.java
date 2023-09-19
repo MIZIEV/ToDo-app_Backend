@@ -1,11 +1,21 @@
 package com.api.dto;
 
+import com.api.model.User;
+
 import java.util.Objects;
 
 public class TodoDTO {
     private String text;
     private boolean isCompleted;
     private String todoUniqueKey;
+    private String username;
+    private User todoOwner;
+    public TodoDTO(String text, boolean isCompleted, String todoUniqueKey, String username) {
+        this.text = text;
+        this.isCompleted = isCompleted;
+        this.todoUniqueKey = todoUniqueKey;
+        this.username = username;
+    }
 
     public String getText() { return text; }
 
@@ -27,6 +37,22 @@ public class TodoDTO {
 
     public void setTodoUniqueKey(String todoUniqueKey) {
         this.todoUniqueKey = todoUniqueKey;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public User getTodoOwner() {
+        return todoOwner;
+    }
+
+    public void setTodoOwner(User todoOwner) {
+        this.todoOwner = todoOwner;
     }
 
     @Override
