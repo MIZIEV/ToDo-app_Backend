@@ -2,7 +2,9 @@ package com.api.controllers;
 
 import com.api.dto.TodoDTO;
 import com.api.model.Todo;
+import com.api.model.User;
 import com.api.services.TodoService;
+import com.api.services.UserService;
 import com.api.util.EmptyFieldException;
 import com.api.util.TodoErrorResponse;
 import org.modelmapper.ModelMapper;
@@ -17,14 +19,16 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("*")
 public class TodoController {
 
     private final TodoService service;
+    private final UserService userService;
 
     @Autowired
-    public TodoController(TodoService service) {
+    public TodoController(TodoService service, UserService userService) {
         this.service = service;
+        this.userService = userService;
     }
 
     @GetMapping("/todos")
@@ -41,7 +45,11 @@ public class TodoController {
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> saveTodo(@RequestBody TodoDTO todoDTO) {
 
-            service.saveNewTodo(convertToTodo(todoDTO));
+        User user = userService.getUserByUsername(todoDTO.getUsername());
+        Todo newTodo = convertToTodo(todoDTO);
+        newTodo.setUser(user);
+
+        service.saveNewTodo(newTodo);
 
         return ResponseEntity.ok(HttpStatus.OK);
     }

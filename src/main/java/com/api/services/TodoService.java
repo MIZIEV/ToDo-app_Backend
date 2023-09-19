@@ -14,15 +14,15 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class TodoService {
 
-    private final TodosRepository repository;
+    private final TodosRepository todoRepository;
 
     @Autowired
-    public TodoService(TodosRepository repository) {
-        this.repository = repository;
+    public TodoService(TodosRepository todoRepository) {
+        this.todoRepository = todoRepository;
     }
 
     public List<Todo> getAllTodos() {
-        return repository.findAll();
+        return todoRepository.findAll();
     }
 
     @Transactional(readOnly = false)
@@ -31,7 +31,7 @@ public class TodoService {
             throw new EmptyFieldException("EmptyFieldException: Field \"text\" is empty ");
         } else {
             enrichTodo(todo);
-            repository.save(todo);
+            todoRepository.save(todo);
         }
     }
 
@@ -45,22 +45,22 @@ public class TodoService {
     @Transactional(readOnly = false)
     public void deleteTodo(String key) {
         Todo todoForDelete = getTodoByUniqueKey((key));
-        repository.delete(todoForDelete);
+        todoRepository.delete(todoForDelete);
     }
 
     @Transactional(readOnly = false)
     public void deleteAllTodos() {
-        repository.deleteAll();
+        todoRepository.deleteAll();
     }
 
     @Transactional(readOnly = false)
     public void deleteCompletedTodo() {
-        List<Todo> completedTodos = repository.findAllByIsCompleted(true);
-        repository.deleteAll(completedTodos);
+        List<Todo> completedTodos = todoRepository.findAllByIsCompleted(true);
+        todoRepository.deleteAll(completedTodos);
     }
 
     public Todo getTodoByUniqueKey(String uniqueKey) {
-        return repository.findByTodoUniqueKey(uniqueKey);
+        return todoRepository.findByTodoUniqueKey(uniqueKey);
     }
 
     private void enrichTodo(Todo todo) {
