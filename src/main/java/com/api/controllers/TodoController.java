@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,17 @@ public class TodoController {
 
     @GetMapping("/todos")
     public List<TodoDTO> getAllTodos() {
-        return service.getAllTodos().stream().map(this::convertToTodoDTO).collect(Collectors.toList());
+
+        List<Todo> rawList = service.getAllTodos();
+        ArrayList<TodoDTO> readyList = new ArrayList<>();
+
+        for (int i = 0; i < rawList.size(); i++) {
+
+            readyList.add(convertToTodoDTO(rawList.get(i)));
+        }
+
+        return readyList;
+        //return service.getAllTodos().stream().map(this::convertToTodoDTO).collect(Collectors.toList());
     }
 
     @PutMapping("/todo/{todoUniqueKey}")
@@ -78,8 +89,15 @@ public class TodoController {
     }
 
     private TodoDTO convertToTodoDTO(Todo todo) {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(todo, TodoDTO.class);
+        TodoDTO todoDTO = new TodoDTO();
+
+        todoDTO.setText(todo.getText());
+        //todoDTO.setUsername(todo.getUser().getUsername());
+        todoDTO.setCompleted(todoDTO.isCompleted());
+        todoDTO.setTodoUniqueKey(todo.getTodoUniqueKey());
+        todoDTO.setTodoOwner(todo.getUser());
+
+        return todoDTO;
     }
 
     @ExceptionHandler
