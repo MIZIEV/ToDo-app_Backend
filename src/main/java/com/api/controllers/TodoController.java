@@ -46,6 +46,13 @@ public class TodoController {
         //return service.getAllTodos().stream().map(this::convertToTodoDTO).collect(Collectors.toList());
     }
 
+    @GetMapping("/todo/{todoUniqueKey}")
+    public TodoDTO getTodoByUniqueKey(@PathVariable String todoUniqueKey){
+        TodoDTO todoDTO = convertToTodoDTO(todoService.getTodoByUniqueKey(todoUniqueKey));
+
+        return todoDTO;
+    }
+
     @PutMapping("/todo/{todoUniqueKey}")
     public ResponseEntity<HttpStatus> updateTodo(@RequestBody TodoDTO updatedTodo,
                                                  @PathVariable String todoUniqueKey) {
