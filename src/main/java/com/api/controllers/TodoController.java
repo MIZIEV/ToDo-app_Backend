@@ -62,10 +62,9 @@ public class TodoController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    //@PutMapping("/todo/{todoUniqueKey}")
-    public ResponseEntity<HttpStatus> changeCompletedStatus(@RequestBody Todo editedTodo,
-                                                            @PathVariable String todoUniqueKey) {
-        todoService.changeCompletedStatus(editedTodo, todoUniqueKey);
+    @PatchMapping("/todo/complete/{todoUniqueKey}")
+    public ResponseEntity<HttpStatus> changeCompletedStatus(@PathVariable String todoUniqueKey) {
+        todoService.changeCompletedStatus(todoUniqueKey);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
