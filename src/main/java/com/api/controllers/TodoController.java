@@ -31,10 +31,11 @@ public class TodoController {
         this.userService = userService;
     }
 
-    @GetMapping("/todos")
-    public List<TodoDTO> getAllTodos() {
+    @GetMapping("/todos/{username}")
+    public List<TodoDTO> getAllTodos(@PathVariable String username) {
+        User user = userService.getUserByUsername(username);
 
-        List<Todo> rawList = todoService.getAllTodos();
+        List<Todo> rawList = user.getTodoList();
         ArrayList<TodoDTO> readyList = new ArrayList<>();
 
         for (int i = 0; i < rawList.size(); i++) {
@@ -47,7 +48,7 @@ public class TodoController {
     }
 
     @GetMapping("/todo/{todoUniqueKey}")
-    public TodoDTO getTodoByUniqueKey(@PathVariable String todoUniqueKey){
+    public TodoDTO getTodoByUniqueKey(@PathVariable String todoUniqueKey) {
         TodoDTO todoDTO = convertToTodoDTO(todoService.getTodoByUniqueKey(todoUniqueKey));
 
         return todoDTO;

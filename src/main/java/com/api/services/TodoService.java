@@ -36,7 +36,7 @@ public class TodoService {
     }
 
     @Transactional(readOnly = false)
-    public void updateTodo(Todo editedTodo,String todoUniqueKey){
+    public void updateTodo(Todo editedTodo, String todoUniqueKey) {
 
         Todo todoForUpdating = todoRepository.findByTodoUniqueKey(todoUniqueKey);
         todoForUpdating.setText(editedTodo.getText());
