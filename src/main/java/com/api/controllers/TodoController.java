@@ -31,10 +31,11 @@ public class TodoController {
         this.userService = userService;
     }
 
-    @GetMapping("/todos")
-    public List<TodoDTO> getAllTodos() {
+    @GetMapping("/todos/{username}")
+    public List<TodoDTO> getAllTodos(@PathVariable String username) {
+        User user = userService.getUserByUsername(username);
 
-        List<Todo> rawList = todoService.getAllTodos();
+        List<Todo> rawList = user.getTodoList();
         ArrayList<TodoDTO> readyList = new ArrayList<>();
 
         for (int i = 0; i < rawList.size(); i++) {
@@ -47,7 +48,7 @@ public class TodoController {
     }
 
     @GetMapping("/todo/{todoUniqueKey}")
-    public TodoDTO getTodoByUniqueKey(@PathVariable String todoUniqueKey){
+    public TodoDTO getTodoByUniqueKey(@PathVariable String todoUniqueKey) {
         TodoDTO todoDTO = convertToTodoDTO(todoService.getTodoByUniqueKey(todoUniqueKey));
 
         return todoDTO;
@@ -61,10 +62,9 @@ public class TodoController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    //@PutMapping("/todo/{todoUniqueKey}")
-    public ResponseEntity<HttpStatus> changeCompletedStatus(@RequestBody Todo editedTodo,
-                                                            @PathVariable String todoUniqueKey) {
-        todoService.changeCompletedStatus(editedTodo, todoUniqueKey);
+    @PatchMapping("/todo/complete/{todoUniqueKey}")
+    public ResponseEntity<HttpStatus> changeCompletedStatus(@PathVariable String todoUniqueKey) {
+        todoService.changeCompletedStatus(todoUniqueKey);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
@@ -115,10 +115,10 @@ public class TodoController {
         TodoDTO todoDTO = new TodoDTO();
 
         todoDTO.setText(todo.getText());
-        //todoDTO.setUsername(todo.getUser().getUsername());
-        todoDTO.setCompleted(todoDTO.isCompleted());
+        todoDTO.setUsername(todo.getUser().getUsername());
+        todoDTO.setCompleted(todo.isCompleted());
         todoDTO.setTodoUniqueKey(todo.getTodoUniqueKey());
-        todoDTO.setTodoOwner(todo.getUser());
+        //todoDTO.setTodoOwner(todo.getUser());
 
         return todoDTO;
     }

@@ -36,7 +36,7 @@ public class TodoService {
     }
 
     @Transactional(readOnly = false)
-    public void updateTodo(Todo editedTodo,String todoUniqueKey){
+    public void updateTodo(Todo editedTodo, String todoUniqueKey) {
 
         Todo todoForUpdating = todoRepository.findByTodoUniqueKey(todoUniqueKey);
         todoForUpdating.setText(editedTodo.getText());
@@ -44,10 +44,15 @@ public class TodoService {
     }
 
     @Transactional(readOnly = false)
-    public void changeCompletedStatus(Todo editedTodo, String todoUniqueKey) {
-        Todo oldTodo = this.getTodoByUniqueKey(todoUniqueKey);
-        oldTodo.setCompleted(editedTodo.isCompleted());
-        this.saveNewTodo(oldTodo);
+    public void changeCompletedStatus(String todoUniqueKey) {
+        Todo todo = this.getTodoByUniqueKey(todoUniqueKey);
+
+        if (todo.isCompleted()){
+            todo.setCompleted(false);
+        } else{
+            todo.setCompleted(true);
+        }
+        this.saveNewTodo(todo);
     }
 
     @Transactional(readOnly = false)
