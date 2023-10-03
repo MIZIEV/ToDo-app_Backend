@@ -11,10 +11,12 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     @Override
     public User getUserByUsername(String username) {
 
@@ -22,12 +24,15 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
 
-        user.setId(optionalUser.get().getId());
-        user.setName(optionalUser.get().getName());
-        user.setUsername(optionalUser.get().getUsername());
-        user.setEmail(optionalUser.get().getEmail());
-        user.setPassword(optionalUser.get().getPassword());
-        user.setTodoList(optionalUser.get().getTodoList());
+        if (optionalUser.isPresent()) {
+
+            user.setId(optionalUser.get().getId());
+            user.setName(optionalUser.get().getName());
+            user.setUsername(optionalUser.get().getUsername());
+            user.setEmail(optionalUser.get().getEmail());
+            user.setPassword(optionalUser.get().getPassword());
+            user.setTodoList(optionalUser.get().getTodoList());
+        }
 
         return user;
     }
