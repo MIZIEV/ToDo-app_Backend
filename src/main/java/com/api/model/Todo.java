@@ -21,7 +21,8 @@ public class Todo {
     @Column(name = "text")
     //@NotEmpty(message = "Text field mustn't be empty.")
     private String text;
-
+    @Column(name = "description")
+    private String description;
     @Column(name = "is_completed")
     private boolean isCompleted;
     @Column(name = "todo_unique_key")
@@ -33,7 +34,7 @@ public class Todo {
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     public Todo() {
@@ -83,9 +84,13 @@ public class Todo {
 
     public void setUser(User user) { this.user = user; }
 
+    public String getDescription() { return description; }
+
+    public void setDescription(String description) { this.description = description; }
+
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, isCompleted, todoUniqueKey, createdAt);
+        return Objects.hash(id, text, description, isCompleted, todoUniqueKey, createdAt);
     }
 
     @Override
@@ -96,12 +101,13 @@ public class Todo {
         return id == todo.id &&
                 isCompleted == todo.isCompleted &&
                 Objects.equals(text, todo.text) &&
+                Objects.equals(description, todo.description) &&
                 Objects.equals(todoUniqueKey, todo.todoUniqueKey) &&
                 Objects.equals(createdAt, todo.createdAt);
     }
 
     @Override
     public String toString() {
-        return id+") "+text + ", " + isCompleted + ", " + todoUniqueKey + ", " + createdAt;
+        return id + ") " + text + ", " + description + ", " + isCompleted + ", " + todoUniqueKey + ", " + createdAt;
     }
 }
