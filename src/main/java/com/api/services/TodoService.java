@@ -40,6 +40,7 @@ public class TodoService {
 
         Todo todoForUpdating = todoRepository.findByTodoUniqueKey(todoUniqueKey);
         todoForUpdating.setText(editedTodo.getText());
+        todoForUpdating.setDescription(editedTodo.getDescription());
         todoRepository.save(todoForUpdating);
     }
 

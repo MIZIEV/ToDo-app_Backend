@@ -115,6 +115,7 @@ public class TodoController {
         TodoDTO todoDTO = new TodoDTO();
 
         todoDTO.setText(todo.getText());
+        todoDTO.setDescription(todo.getDescription());
         todoDTO.setUsername(todo.getUser().getUsername());
         todoDTO.setCompleted(todo.isCompleted());
         todoDTO.setTodoUniqueKey(todo.getTodoUniqueKey());
