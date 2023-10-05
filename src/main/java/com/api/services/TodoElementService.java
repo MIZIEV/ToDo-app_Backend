@@ -5,4 +5,6 @@ import com.api.model.TodoElement;
 public interface TodoElementService {
 
     void saveElement(TodoElement todoElement);
+
+    TodoElement getElementById(Long id);
 }

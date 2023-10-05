@@ -20,4 +20,10 @@ public class TodoElementServiceImpl implements TodoElementService {
     public void saveElement(TodoElement todoElement) {
 
     }
+
+    @Override
+    public TodoElement getElementById(Long id) {
+        TodoElement todoElement = repository.getReferenceById(id);
+        return todoElement;
+    }
 }
