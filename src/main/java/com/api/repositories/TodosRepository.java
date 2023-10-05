@@ -9,5 +9,7 @@ import java.util.List;
 @Repository
 public interface TodosRepository extends JpaRepository<Todo, Integer> {
     Todo findByTodoUniqueKey(String todoUniqueKey);
+
+    Todo findByName(String todoName);
     List<Todo> findAllByIsCompleted(boolean isCompleted);
 }
