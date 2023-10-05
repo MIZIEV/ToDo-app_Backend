@@ -27,7 +27,7 @@ public class TodoService {
 
     @Transactional(readOnly = false)
     public void saveNewTodo(Todo todo) {
-        if (todo.getText() == null) {
+        if (todo.getName() == null) {
             throw new EmptyFieldException("EmptyFieldException: Field \"text\" is empty ");
         } else {
             enrichTodo(todo);
@@ -39,7 +39,8 @@ public class TodoService {
     public void updateTodo(Todo editedTodo, String todoUniqueKey) {
 
         Todo todoForUpdating = todoRepository.findByTodoUniqueKey(todoUniqueKey);
-        todoForUpdating.setText(editedTodo.getText());
+        todoForUpdating.setName(editedTodo.getName());
+        todoForUpdating.setDescription(editedTodo.getDescription());
         todoRepository.save(todoForUpdating);
     }
 
@@ -71,10 +72,12 @@ public class TodoService {
         List<Todo> completedTodos = todoRepository.findAllByIsCompleted(true);
         todoRepository.deleteAll(completedTodos);
     }
-
+    @Transactional(readOnly = true)
     public Todo getTodoByUniqueKey(String uniqueKey) {
         return todoRepository.findByTodoUniqueKey(uniqueKey);
     }
+    @Transactional(readOnly = true)
+    public Todo getTodoByName(String name){ return todoRepository.findByName(name); }
 
     private void enrichTodo(Todo todo) {
         todo.setCreatedAt(LocalDateTime.now());
