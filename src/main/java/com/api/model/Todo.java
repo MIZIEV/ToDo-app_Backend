@@ -1,10 +1,7 @@
 package com.api.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,9 +15,9 @@ public class Todo {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "text")
+    @Column(name = "name")
     //@NotEmpty(message = "Text field mustn't be empty.")
-    private String text;
+    private String name;
     @Column(name = "description")
     private String description;
     @Column(name = "is_completed")
@@ -49,12 +46,12 @@ public class Todo {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public String getName() {
+        return name;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setName(String text) {
+        this.name = text;
     }
 
     public boolean isCompleted() {
@@ -107,7 +104,7 @@ public class Todo {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, description, isCompleted, todoUniqueKey, createdAt);
+        return Objects.hash(id, name, description, isCompleted, todoUniqueKey, createdAt);
     }
 
     @Override
@@ -117,7 +114,7 @@ public class Todo {
         Todo todo = (Todo) obj;
         return id == todo.id &&
                 isCompleted == todo.isCompleted &&
-                Objects.equals(text, todo.text) &&
+                Objects.equals(name, todo.name) &&
                 Objects.equals(description, todo.description) &&
                 Objects.equals(todoUniqueKey, todo.todoUniqueKey) &&
                 Objects.equals(createdAt, todo.createdAt);
@@ -125,6 +122,6 @@ public class Todo {
 
     @Override
     public String toString() {
-        return id + ") " + text + ", " + description + ", " + isCompleted + ", " + todoUniqueKey + ", " + createdAt;
+        return id + ") " + name + ", " + description + ", " + isCompleted + ", " + todoUniqueKey + ", " + createdAt;
     }
 }

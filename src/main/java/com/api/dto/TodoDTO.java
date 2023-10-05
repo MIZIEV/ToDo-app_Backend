@@ -5,7 +5,7 @@ import com.api.model.User;
 import java.util.Objects;
 
 public class TodoDTO {
-    private String text;
+    private String name;
     private String description;
     private boolean isCompleted;
     private String todoUniqueKey;
@@ -14,18 +14,18 @@ public class TodoDTO {
 
     public TodoDTO() {}
 
-    public TodoDTO(String text, boolean isCompleted, String todoUniqueKey, String username, String description) {
-        this.text = text;
+    public TodoDTO(String name, boolean isCompleted, String todoUniqueKey, String username, String description) {
+        this.name = name;
         this.description = description;
         this.isCompleted = isCompleted;
         this.todoUniqueKey = todoUniqueKey;
         this.username = username;
     }
 
-    public String getText() { return text; }
+    public String getName() { return name; }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() { return description; }
@@ -70,7 +70,7 @@ public class TodoDTO {
         if (obj == null || getClass() != obj.getClass()) return false;
         TodoDTO todo = (TodoDTO) obj;
         return isCompleted == todo.isCompleted &&
-                Objects.equals(text, todo.text) &&
+                Objects.equals(name, todo.name) &&
                 Objects.equals(description, todo.description) &&
                 Objects.equals(username, todo.username) &&
                 Objects.equals(todoUniqueKey, todo.todoUniqueKey);
@@ -78,11 +78,11 @@ public class TodoDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(text, description, username, isCompleted, todoUniqueKey);
+        return Objects.hash(name, description, username, isCompleted, todoUniqueKey);
     }
 
     @Override
     public String toString() {
-        return text + ", "+description+", " + isCompleted + ", " + todoUniqueKey;
+        return name + ", "+description+", " + isCompleted + ", " + todoUniqueKey;
     }
 }
