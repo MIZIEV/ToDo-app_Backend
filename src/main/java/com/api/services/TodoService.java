@@ -72,10 +72,12 @@ public class TodoService {
         List<Todo> completedTodos = todoRepository.findAllByIsCompleted(true);
         todoRepository.deleteAll(completedTodos);
     }
-
+    @Transactional(readOnly = true)
     public Todo getTodoByUniqueKey(String uniqueKey) {
         return todoRepository.findByTodoUniqueKey(uniqueKey);
     }
+    @Transactional(readOnly = true)
+    public Todo getTodoByName(String name){ return todoRepository.findByName(name); }
 
     private void enrichTodo(Todo todo) {
         todo.setCreatedAt(LocalDateTime.now());

@@ -16,6 +16,9 @@ public class TodoElement {
     @Column(name = "element_name")
     private String elementName;
 
+    @Column(name = "is_completed")
+    private boolean isCompleted;
+
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "element_id", referencedColumnName = "id")
@@ -24,8 +27,9 @@ public class TodoElement {
     public TodoElement() {
     }
 
-    public TodoElement(String elementName, Todo todoOwner) {
+    public TodoElement(String elementName, Todo todoOwner, boolean isCompleted) {
         this.elementName = elementName;
+        this.isCompleted = isCompleted;
         this.todoOwner = todoOwner;
     }
 
@@ -53,9 +57,17 @@ public class TodoElement {
         this.todoOwner = todoOwner;
     }
 
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(id, elementName);
+        return Objects.hash(id, elementName, isCompleted);
     }
 
     @Override
@@ -65,11 +77,12 @@ public class TodoElement {
         if (obj == null || getClass() != obj.getClass()) return false;
         TodoElement todoElement = (TodoElement) obj;
         return id == todoElement.id &&
-                elementName == todoElement.elementName;
+                elementName == todoElement.elementName &&
+                isCompleted == todoElement.isCompleted;
     }
 
     @Override
     public String toString() {
-        return id + ") " + elementName;
+        return id + ") " + elementName + ", is completed - " + isCompleted;
     }
 }
