@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -17,7 +18,6 @@ public class Todo {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     @Column(name = "text")
     //@NotEmpty(message = "Text field mustn't be empty.")
     private String text;
@@ -28,14 +28,15 @@ public class Todo {
     @Column(name = "todo_unique_key")
     //@NotEmpty(message = "Key field mustn't be empty.")
     private String todoUniqueKey;
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+    @OneToMany(mappedBy = "todoOwner")
+    @JsonBackReference
+    private List<TodoElement> elementsList;
 
     public Todo() {
     }
@@ -80,13 +81,29 @@ public class Todo {
         this.createdAt = createdAt;
     }
 
-    public User getUser() { return user; }
+    public User getUser() {
+        return user;
+    }
 
-    public void setUser(User user) { this.user = user; }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-    public String getDescription() { return description; }
+    public String getDescription() {
+        return description;
+    }
 
-    public void setDescription(String description) { this.description = description; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<TodoElement> getElementsList() {
+        return elementsList;
+    }
+
+    public void setElementsList(List<TodoElement> elementsList) {
+        this.elementsList = elementsList;
+    }
 
     @Override
     public int hashCode() {
