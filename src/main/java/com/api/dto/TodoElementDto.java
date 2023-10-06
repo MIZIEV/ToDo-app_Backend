@@ -1,16 +1,25 @@
 package com.api.dto;
 
 public class TodoElementDto {
-    private String elementName;
 
+    private Long id;
+    private String elementName;
     private boolean isCompleted;
 
+    public TodoElementDto() {}
 
-    public TodoElementDto(){}
-
-    public TodoElementDto(String elementName, boolean isCompleted) {
+    public TodoElementDto(Long id, String elementName, boolean isCompleted) {
+        this.id = id;
         this.elementName = elementName;
         this.isCompleted = isCompleted;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getElementName() {
