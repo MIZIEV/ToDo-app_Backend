@@ -12,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
 @CrossOrigin("*")
 @RequestMapping("/api/element")
 public class TodoElementController {
@@ -39,8 +42,25 @@ public class TodoElementController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @GetMapping("/list/{todoUniqueKey}")
+    public List<TodoElementDto> getAllElements(@PathVariable String todoUniqueKey) {
+        List<TodoElement> rawList = todoService.getTodoByUniqueKey(todoUniqueKey).getElementsList();
+        List<TodoElementDto> readyList = new ArrayList<>();
+
+        for (int i = 0; i < rawList.size(); i++) {
+            readyList.add(convertToTodoElementDto(rawList.get(i)));
+        }
+        return readyList;
+    }
+
     private TodoElement convertToTodoElement(TodoElementDto todoElementDto) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(todoElementDto, TodoElement.class);
+    }
+
+    private TodoElementDto convertToTodoElementDto(TodoElement todoElement) {
+        ModelMapper modelMapper = new ModelMapper();
+
+        return modelMapper.map(todoElement, TodoElementDto.class);
     }
 }
