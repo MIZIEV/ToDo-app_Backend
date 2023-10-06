@@ -36,8 +36,23 @@ public class TodoElementServiceImpl implements TodoElementService {
     }
 
     @Override
+    @Transactional(readOnly = false)
+    public void changeCompleteStatus(Long id) {
+        TodoElement todoElement = elementRepository.getReferenceById(id);
+
+        if (todoElement.isCompleted()) {
+            todoElement.setCompleted(false);
+        } else {
+            todoElement.setCompleted(true);
+        }
+        elementRepository.save(todoElement);
+    }
+
+    @Override
     public TodoElement getElementById(Long id) {
         TodoElement todoElement = elementRepository.getReferenceById(id);
         return todoElement;
     }
+
+
 }

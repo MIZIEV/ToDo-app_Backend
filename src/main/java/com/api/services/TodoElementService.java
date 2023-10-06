@@ -11,4 +11,6 @@ public interface TodoElementService {
     TodoElement getElementById(Long id);
 
     List<TodoElement> elementsList(String todoUniqueKey);
+
+    void changeCompleteStatus(Long id);
 }

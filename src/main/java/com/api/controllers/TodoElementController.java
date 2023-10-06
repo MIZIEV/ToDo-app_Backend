@@ -53,6 +53,12 @@ public class TodoElementController {
         return readyList;
     }
 
+    @PatchMapping("/change-status/{id}")
+    public ResponseEntity<HttpStatus> changeCompleteStatus(@PathVariable Long id) {
+        todoElementService.changeCompleteStatus(id);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
     private TodoElement convertToTodoElement(TodoElementDto todoElementDto) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(todoElementDto, TodoElement.class);
