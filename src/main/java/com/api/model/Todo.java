@@ -1,6 +1,7 @@
 package com.api.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -32,7 +33,7 @@ public class Todo {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
     @OneToMany(mappedBy = "todoOwner")
-    @JsonBackReference
+    @JsonManagedReference
     private List<TodoElement> elementsList;
 
     public Todo() {

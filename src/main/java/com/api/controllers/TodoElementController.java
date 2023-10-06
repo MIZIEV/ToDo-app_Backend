@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @CrossOrigin("*")
@@ -28,10 +26,11 @@ public class TodoElementController {
         this.todoService = todoService;
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<HttpStatus> saveNewElement(TodoElementDto todoElementDto) {
+    @PostMapping("/add/{todoUniqueKey}")
+    public ResponseEntity<HttpStatus> saveNewElement(@PathVariable String todoUniqueKey,
+                                                     @RequestBody TodoElementDto todoElementDto) {
 
-        Todo ownerTodo = todoService.getTodoByName(todoElementDto.getElementName());
+        Todo ownerTodo = todoService.getTodoByUniqueKey(todoUniqueKey);
         TodoElement todoElement = convertToTodoElement(todoElementDto);
         todoElement.setTodoOwner(ownerTodo);
 

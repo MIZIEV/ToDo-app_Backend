@@ -5,13 +5,11 @@ public class TodoElementDto {
 
     private boolean isCompleted;
 
-    private String todoOwnerName;
 
     public TodoElementDto(){}
 
-    public TodoElementDto(String elementName, boolean isCompleted,String todoOwnerName) {
+    public TodoElementDto(String elementName, boolean isCompleted) {
         this.elementName = elementName;
-        this.todoOwnerName=todoOwnerName;
         this.isCompleted = isCompleted;
     }
 
@@ -21,14 +19,6 @@ public class TodoElementDto {
 
     public void setElementName(String elementName) {
         this.elementName = elementName;
-    }
-
-    public String getTodoOwnerName() {
-        return todoOwnerName;
-    }
-
-    public void setTodoOwnerName(String todoOwnerName) {
-        this.todoOwnerName = todoOwnerName;
     }
 
     public boolean isCompleted() {

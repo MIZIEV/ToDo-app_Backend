@@ -18,7 +18,7 @@ public class TodoElementServiceImpl implements TodoElementService {
 
     @Override
     public void saveElement(TodoElement todoElement) {
-
+        repository.save(todoElement);
     }
 
     @Override
