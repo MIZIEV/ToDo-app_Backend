@@ -2,28 +2,42 @@ package com.api.services.impl;
 
 import com.api.model.TodoElement;
 import com.api.repositories.TodoElementRepository;
+import com.api.repositories.TodosRepository;
 import com.api.services.TodoElementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class TodoElementServiceImpl implements TodoElementService {
 
-    private final TodoElementRepository repository;
+    private final TodoElementRepository elementRepository;
+    private final TodosRepository todosRepository;
 
     @Autowired
-    public TodoElementServiceImpl(TodoElementRepository repository) {
-        this.repository = repository;
+    public TodoElementServiceImpl(TodoElementRepository elementRepository, TodosRepository todosRepository) {
+        this.elementRepository = elementRepository;
+        this.todosRepository = todosRepository;
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void saveElement(TodoElement todoElement) {
+        elementRepository.save(todoElement);
+    }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<TodoElement> elementsList(String todoUniqueKey) {
+        List<TodoElement> elements = todosRepository.findByTodoUniqueKey(todoUniqueKey).getElementsList();
+        return elements;
     }
 
     @Override
     public TodoElement getElementById(Long id) {
-        TodoElement todoElement = repository.getReferenceById(id);
+        TodoElement todoElement = elementRepository.getReferenceById(id);
         return todoElement;
     }
 }
