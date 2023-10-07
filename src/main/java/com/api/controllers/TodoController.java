@@ -43,8 +43,23 @@ public class TodoController {
             readyList.add(convertToTodoDTO(rawList.get(i)));
         }
 
-        return readyList;
+        return readyList.stream().filter(todoDTO -> !todoDTO.isCompleted()).toList();
         //return service.getAllTodos().stream().map(this::convertToTodoDTO).collect(Collectors.toList());
+    }
+
+    @GetMapping("/todos-completed/{username}")
+    public List<TodoDTO> getAllCompletedTodo(@PathVariable String username){
+        User user = userService.getUserByUsername(username);
+
+        List<Todo> rawList = user.getTodoList();
+        ArrayList<TodoDTO> readyList = new ArrayList<>();
+
+        for (int i = 0; i < rawList.size(); i++) {
+
+            readyList.add(convertToTodoDTO(rawList.get(i)));
+        }
+
+        return readyList.stream().filter(TodoDTO::isCompleted).toList();
     }
 
     @GetMapping("/todo/{todoUniqueKey}")

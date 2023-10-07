@@ -48,9 +48,9 @@ public class TodoService {
     public void changeCompletedStatus(String todoUniqueKey) {
         Todo todo = this.getTodoByUniqueKey(todoUniqueKey);
 
-        if (todo.isCompleted()){
+        if (todo.isCompleted()) {
             todo.setCompleted(false);
-        } else{
+        } else {
             todo.setCompleted(true);
         }
         this.saveNewTodo(todo);
@@ -77,7 +77,7 @@ public class TodoService {
         return todoRepository.findByTodoUniqueKey(uniqueKey);
     }
     @Transactional(readOnly = true)
-    public Todo getTodoByName(String name){ return todoRepository.findByName(name); }
+    public Todo getTodoByName(String name) { return todoRepository.findByName(name);}
 
     private void enrichTodo(Todo todo) {
         todo.setCreatedAt(LocalDateTime.now());
