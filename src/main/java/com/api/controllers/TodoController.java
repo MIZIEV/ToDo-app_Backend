@@ -32,33 +32,36 @@ public class TodoController {
     }
 
     @GetMapping("/todos/{username}")
-    public List<TodoDTO> getAllTodos(@PathVariable String username) {
+    public List<TodoDTO> getAllInCompletedTodos(@PathVariable String username) {
         User user = userService.getUserByUsername(username);
 
         List<Todo> rawList = user.getTodoList();
         ArrayList<TodoDTO> readyList = new ArrayList<>();
 
-        for (int i = 0; i < rawList.size(); i++) {
-
-            readyList.add(convertToTodoDTO(rawList.get(i)));
+        if (rawList != null) {
+            for (Todo todo : rawList) {
+                readyList.add(convertToTodoDTO(todo));
+            }
+        } else {
+            return null;
         }
-
         return readyList.stream().filter(todoDTO -> !todoDTO.isCompleted()).toList();
-        //return service.getAllTodos().stream().map(this::convertToTodoDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/todos-completed/{username}")
-    public List<TodoDTO> getAllCompletedTodo(@PathVariable String username){
+    public List<TodoDTO> getAllCompletedTodo(@PathVariable String username) {
         User user = userService.getUserByUsername(username);
 
         List<Todo> rawList = user.getTodoList();
         ArrayList<TodoDTO> readyList = new ArrayList<>();
 
-        for (int i = 0; i < rawList.size(); i++) {
-
-            readyList.add(convertToTodoDTO(rawList.get(i)));
+        if (rawList != null) {
+            for (Todo todo : rawList) {
+                readyList.add(convertToTodoDTO(todo));
+            }
+        } else {
+            return null;
         }
-
         return readyList.stream().filter(TodoDTO::isCompleted).toList();
     }
 
