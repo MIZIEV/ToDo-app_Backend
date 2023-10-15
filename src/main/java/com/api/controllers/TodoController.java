@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api")
-@CrossOrigin("*")
 public class TodoController {
 
     private final TodoService todoService;
@@ -117,16 +117,8 @@ public class TodoController {
     }
 
     private Todo convertToTodo(TodoDTO todoDTO) {
- /*       Todo todo = new Todo();
-
-        todo.setText(todoDTO.getText());
-        todo.setCompleted(todoDTO.isCompleted());
-        todo.setUser(todoDTO.getTodoOwner());
-        todo.setTodoUniqueKey(todoDTO.getTodoUniqueKey());
-*/
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(todoDTO, Todo.class);
-        //return todo;
     }
 
     private TodoDTO convertToTodoDTO(Todo todo) {
@@ -137,7 +129,6 @@ public class TodoController {
         todoDTO.setUsername(todo.getUser().getUsername());
         todoDTO.setCompleted(todo.isCompleted());
         todoDTO.setTodoUniqueKey(todo.getTodoUniqueKey());
-        //todoDTO.setTodoOwner(todo.getUser());
 
         return todoDTO;
     }
@@ -145,7 +136,6 @@ public class TodoController {
     @ExceptionHandler
     private ResponseEntity<TodoErrorResponse> handleException(EmptyFieldException exception) {
         TodoErrorResponse response = new TodoErrorResponse("Text field mustn't be empty!", LocalDateTime.now());
-
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

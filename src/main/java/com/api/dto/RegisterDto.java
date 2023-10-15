@@ -1,5 +1,7 @@
 package com.api.dto;
 
+import java.util.Objects;
+
 public class RegisterDto {
 
     private String name;
@@ -46,5 +48,30 @@ public class RegisterDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name,username,email,password);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        RegisterDto myClass = (RegisterDto) obj;
+        return Objects.equals(name, myClass.name) &&
+                Objects.equals(username, myClass.username) &&
+                Objects.equals(email, myClass.email) &&
+                Objects.equals(password, myClass.password);
+    }
+
+    @Override
+    public String toString() {
+        return name+", "+username+", "+email+", "+password;
     }
 }
