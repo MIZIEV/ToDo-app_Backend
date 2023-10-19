@@ -76,8 +76,8 @@ public class TodoElement {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         TodoElement todoElement = (TodoElement) obj;
-        return id == todoElement.id &&
-                elementName == todoElement.elementName &&
+        return Objects.equals(id, todoElement.id) &&
+                Objects.equals(elementName, todoElement.elementName) &&
                 isCompleted == todoElement.isCompleted;
     }
 

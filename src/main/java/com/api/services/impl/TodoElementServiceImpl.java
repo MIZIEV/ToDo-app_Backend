@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class TodoElementServiceImpl implements TodoElementService {
 
     private final TodoElementRepository elementRepository;
@@ -53,6 +54,4 @@ public class TodoElementServiceImpl implements TodoElementService {
         TodoElement todoElement = elementRepository.getReferenceById(id);
         return todoElement;
     }
-
-
 }
