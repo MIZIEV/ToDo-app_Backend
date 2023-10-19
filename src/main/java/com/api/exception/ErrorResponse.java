@@ -1,13 +1,13 @@
-package com.api.util;
+package com.api.exception;
 
 import java.time.LocalDateTime;
 
-public class TodoErrorResponse {
+public class ErrorResponse {
 
     private String message;
     private LocalDateTime time;
 
-    public TodoErrorResponse(String message, LocalDateTime time) {
+    public ErrorResponse(String message, LocalDateTime time) {
         this.message = message;
         this.time = time;
     }

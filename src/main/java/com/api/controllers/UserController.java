@@ -2,6 +2,8 @@ package com.api.controllers;
 
 
 import com.api.dto.RegisterDto;
+import com.api.exception.ErrorResponse;
+import com.api.exception.UserNotFoundException;
 import com.api.model.User;
 import com.api.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @CrossOrigin("*")
@@ -24,7 +28,8 @@ public class UserController {
 
     @GetMapping("/{username}")
     public RegisterDto getUser(@PathVariable String username) {
-        RegisterDto userDto = convertToUserDto(userService.getUserByUsername(username));
+        RegisterDto userDto;
+        userDto = convertToUserDto(userService.getUserByUsername(username));
         return userDto;
     }
 
@@ -48,5 +53,14 @@ public class UserController {
     private RegisterDto convertToUserDto(User user) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(user, RegisterDto.class);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ErrorResponse> handleExceptions(UserNotFoundException exception) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "User not found", LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }
