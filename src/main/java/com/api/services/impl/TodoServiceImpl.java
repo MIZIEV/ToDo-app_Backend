@@ -1,8 +1,8 @@
-package com.api.services;
+package com.api.services.impl;
 
 import com.api.model.Todo;
 import com.api.repositories.TodosRepository;
-import com.api.util.EmptyFieldException;
+import com.api.exception.EmptyFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,19 +12,16 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-public class TodoService {
+public class TodoServiceImpl implements TodoService{
 
     private final TodosRepository todoRepository;
 
     @Autowired
-    public TodoService(TodosRepository todoRepository) {
+    public TodoServiceImpl(TodosRepository todoRepository) {
         this.todoRepository = todoRepository;
     }
 
-    public List<Todo> getAllTodos() {
-        return todoRepository.findAll();
-    }
-
+    @Override
     @Transactional(readOnly = false)
     public void saveNewTodo(Todo todo) {
         if (todo.getName() == null) {
@@ -35,6 +32,7 @@ public class TodoService {
         }
     }
 
+    @Override
     @Transactional(readOnly = false)
     public void updateTodo(Todo editedTodo, String todoUniqueKey) {
 
@@ -44,40 +42,39 @@ public class TodoService {
         todoRepository.save(todoForUpdating);
     }
 
+    @Override
     @Transactional(readOnly = false)
     public void changeCompletedStatus(String todoUniqueKey) {
         Todo todo = this.getTodoByUniqueKey(todoUniqueKey);
 
-        if (todo.isCompleted()) {
-            todo.setCompleted(false);
-        } else {
-            todo.setCompleted(true);
-        }
+        todo.setCompleted(!todo.isCompleted());
         this.saveNewTodo(todo);
     }
 
+    @Override
     @Transactional(readOnly = false)
     public void deleteTodo(String key) {
         Todo todoForDelete = getTodoByUniqueKey((key));
         todoRepository.delete(todoForDelete);
     }
 
+    @Override
     @Transactional(readOnly = false)
     public void deleteAllTodos() {
         todoRepository.deleteAll();
     }
 
+    @Override
     @Transactional(readOnly = false)
     public void deleteCompletedTodo() {
         List<Todo> completedTodos = todoRepository.findAllByIsCompleted(true);
         todoRepository.deleteAll(completedTodos);
     }
+    @Override
     @Transactional(readOnly = true)
     public Todo getTodoByUniqueKey(String uniqueKey) {
         return todoRepository.findByTodoUniqueKey(uniqueKey);
     }
-    @Transactional(readOnly = true)
-    public Todo getTodoByName(String name) { return todoRepository.findByName(name);}
 
     private void enrichTodo(Todo todo) {
         todo.setCreatedAt(LocalDateTime.now());

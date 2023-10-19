@@ -63,9 +63,6 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String username) {
         Optional<User> optionalUserForDeleting = userRepository.findByUsername(username);
 
-        if (optionalUserForDeleting.isPresent()) {
-            userRepository.delete(optionalUserForDeleting.get());
-        }
+        optionalUserForDeleting.ifPresent(userRepository::delete);
     }
-
 }

@@ -4,7 +4,7 @@ import com.api.dto.TodoElementDto;
 import com.api.model.Todo;
 import com.api.model.TodoElement;
 import com.api.services.TodoElementService;
-import com.api.services.TodoService;
+import com.api.services.impl.TodoServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,19 +20,19 @@ import java.util.List;
 public class TodoElementController {
 
     private final TodoElementService todoElementService;
-    private final TodoService todoService;
+    private final TodoServiceImpl todoServiceImpl;
 
     @Autowired
-    public TodoElementController(TodoElementService todoElementService, TodoService todoService) {
+    public TodoElementController(TodoElementService todoElementService, TodoServiceImpl todoServiceImpl) {
         this.todoElementService = todoElementService;
-        this.todoService = todoService;
+        this.todoServiceImpl = todoServiceImpl;
     }
 
     @PostMapping("/add/{todoUniqueKey}")
     public ResponseEntity<HttpStatus> saveNewElement(@PathVariable String todoUniqueKey,
                                                      @RequestBody TodoElementDto todoElementDto) {
 
-        Todo ownerTodo = todoService.getTodoByUniqueKey(todoUniqueKey);
+        Todo ownerTodo = todoServiceImpl.getTodoByUniqueKey(todoUniqueKey);
         TodoElement todoElement = convertToTodoElement(todoElementDto);
         todoElement.setTodoOwner(ownerTodo);
 
@@ -43,7 +43,7 @@ public class TodoElementController {
 
     @GetMapping("/list/{todoUniqueKey}")
     public List<TodoElementDto> getAllElements(@PathVariable String todoUniqueKey) {
-        List<TodoElement> rawList = todoService.getTodoByUniqueKey(todoUniqueKey).getElementsList();
+        List<TodoElement> rawList = todoServiceImpl.getTodoByUniqueKey(todoUniqueKey).getElementsList();
         List<TodoElementDto> readyList = new ArrayList<>();
 
         for (TodoElement todoElement : rawList) {

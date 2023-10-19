@@ -3,10 +3,10 @@ package com.api.controllers;
 import com.api.dto.TodoDTO;
 import com.api.model.Todo;
 import com.api.model.User;
-import com.api.services.TodoService;
+import com.api.services.impl.TodoServiceImpl;
 import com.api.services.UserService;
-import com.api.util.EmptyFieldException;
-import com.api.util.TodoErrorResponse;
+import com.api.exception.EmptyFieldException;
+import com.api.exception.ErrorResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,12 +22,12 @@ import java.util.List;
 @RequestMapping("/api")
 public class TodoController {
 
-    private final TodoService todoService;
+    private final TodoServiceImpl todoServiceImpl;
     private final UserService userService;
 
     @Autowired
-    public TodoController(TodoService service, UserService userService) {
-        this.todoService = service;
+    public TodoController(TodoServiceImpl service, UserService userService) {
+        this.todoServiceImpl = service;
         this.userService = userService;
     }
 
@@ -67,7 +67,7 @@ public class TodoController {
 
     @GetMapping("/todo/{todoUniqueKey}")
     public TodoDTO getTodoByUniqueKey(@PathVariable String todoUniqueKey) {
-        TodoDTO todoDTO = convertToTodoDTO(todoService.getTodoByUniqueKey(todoUniqueKey));
+        TodoDTO todoDTO = convertToTodoDTO(todoServiceImpl.getTodoByUniqueKey(todoUniqueKey));
 
         return todoDTO;
     }
@@ -75,14 +75,14 @@ public class TodoController {
     @PutMapping("/todo/{todoUniqueKey}")
     public ResponseEntity<HttpStatus> updateTodo(@RequestBody TodoDTO updatedTodo,
                                                  @PathVariable String todoUniqueKey) {
-        todoService.updateTodo(convertToTodo(updatedTodo), todoUniqueKey);
+        todoServiceImpl.updateTodo(convertToTodo(updatedTodo), todoUniqueKey);
 
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @PatchMapping("/todo/complete/{todoUniqueKey}")
     public ResponseEntity<HttpStatus> changeCompletedStatus(@PathVariable String todoUniqueKey) {
-        todoService.changeCompletedStatus(todoUniqueKey);
+        todoServiceImpl.changeCompletedStatus(todoUniqueKey);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
@@ -93,26 +93,26 @@ public class TodoController {
         Todo newTodo = convertToTodo(todoDTO);
         newTodo.setUser(user);
 
-        todoService.saveNewTodo(newTodo);
+        todoServiceImpl.saveNewTodo(newTodo);
 
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/todo/{todoUniqueKey}")
     public ResponseEntity<HttpStatus> deleteTodo(@PathVariable String todoUniqueKey) {
-        todoService.deleteTodo(todoUniqueKey);
+        todoServiceImpl.deleteTodo(todoUniqueKey);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/todos/delete")
     public ResponseEntity<HttpStatus> deleteAllTodos() {
-        todoService.deleteAllTodos();
+        todoServiceImpl.deleteAllTodos();
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/todos/delete_completed")
     public ResponseEntity<HttpStatus> deleteCompletedTodo() {
-        todoService.deleteCompletedTodo();
+        todoServiceImpl.deleteCompletedTodo();
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
@@ -134,8 +134,8 @@ public class TodoController {
     }
 
     @ExceptionHandler
-    private ResponseEntity<TodoErrorResponse> handleException(EmptyFieldException exception) {
-        TodoErrorResponse response = new TodoErrorResponse("Text field mustn't be empty!", LocalDateTime.now());
+    private ResponseEntity<ErrorResponse> handleException(EmptyFieldException exception) {
+        ErrorResponse response = new ErrorResponse("Text field mustn't be empty!", LocalDateTime.now());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
