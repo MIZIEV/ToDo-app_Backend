@@ -13,7 +13,7 @@ public class Todo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "element_name")
+    @Column(name = "todo_name")
     private String todoName;
 
     @Column(name = "is_completed")
@@ -45,8 +45,8 @@ public class Todo {
         return todoName;
     }
 
-    public void setTodoName(String elementName) {
-        this.todoName = elementName;
+    public void setTodoName(String todoName) {
+        this.todoName = todoName;
     }
 
     public Task getTodoOwner() {

@@ -4,14 +4,14 @@ import java.util.Objects;
 
 public class TodoDto {
     private Long id;
-    private String elementName;
+    private String todoName;
     private boolean isCompleted;
 
     public TodoDto() {}
 
-    public TodoDto(Long id, String elementName, boolean isCompleted) {
+    public TodoDto(Long id, String todoName, boolean isCompleted) {
         this.id = id;
-        this.elementName = elementName;
+        this.todoName = todoName;
         this.isCompleted = isCompleted;
     }
 
@@ -23,12 +23,12 @@ public class TodoDto {
         this.id = id;
     }
 
-    public String getElementName() {
-        return elementName;
+    public String getTodoName() {
+        return todoName;
     }
 
-    public void setElementName(String elementName) {
-        this.elementName = elementName;
+    public void setTodoName(String todoName) {
+        this.todoName = todoName;
     }
 
     public boolean isCompleted() {
@@ -41,7 +41,7 @@ public class TodoDto {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, elementName, isCompleted);
+        return Objects.hash(id, todoName, isCompleted);
     }
 
     @Override
@@ -49,11 +49,11 @@ public class TodoDto {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         TodoDto myClass = (TodoDto) obj;
-        return Objects.equals(id, myClass.id) && Objects.equals(elementName, myClass.elementName) && isCompleted == myClass.isCompleted;
+        return Objects.equals(id, myClass.id) && Objects.equals(todoName, myClass.todoName) && isCompleted == myClass.isCompleted;
     }
 
     @Override
     public String toString() {
-        return id + ")" + elementName + ", " + isCompleted;
+        return id + ")" + todoName + ", " + isCompleted;
     }
 }

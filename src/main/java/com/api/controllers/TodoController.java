@@ -41,9 +41,9 @@ public class TodoController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @GetMapping("/list/{todoUniqueKey}")
-    public List<TodoDto> getAllElements(@PathVariable String todoUniqueKey) {
-        List<Todo> rawList = todoServiceImpl.getTodoByUniqueKey(todoUniqueKey).getElementsList();
+    @GetMapping("/list/{taskUniqueKey}")
+    public List<TodoDto> getAllElements(@PathVariable String taskUniqueKey) {
+        List<Todo> rawList = todoServiceImpl.getTodoByUniqueKey(taskUniqueKey).getTodoList();
         List<TodoDto> readyList = new ArrayList<>();
 
         for (Todo todo : rawList) {

@@ -32,7 +32,7 @@ public class TodoServiceImpl implements TodoService {
     @Override
     @Transactional(readOnly = true)
     public List<Todo> elementsList(String taskUniqueKey) {
-        List<Todo> elements = taskRepository.findByTaskUniqueKey(taskUniqueKey).getElementsList();
+        List<Todo> elements = taskRepository.findByTaskUniqueKey(taskUniqueKey).getTodoList();
         return elements;
     }
 

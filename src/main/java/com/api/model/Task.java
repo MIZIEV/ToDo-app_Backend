@@ -34,7 +34,7 @@ public class Task {
     private User user;
     @OneToMany(mappedBy = "taskOwner")
     @JsonManagedReference
-    private List<Todo> elementsList;
+    private List<Todo> todoList;
 
     public Task() {
     }
@@ -95,12 +95,12 @@ public class Task {
         this.description = description;
     }
 
-    public List<Todo> getElementsList() {
-        return elementsList;
+    public List<Todo> getTodoList() {
+        return todoList;
     }
 
-    public void setElementsList(List<Todo> elementsList) {
-        this.elementsList = elementsList;
+    public void setTodoList(List<Todo> elementsList) {
+        this.todoList = elementsList;
     }
 
     @Override
