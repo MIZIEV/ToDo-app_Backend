@@ -26,7 +26,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
-    private List<Todo> todoList;
+    private List<Task> taskList;
 
     private final String ROLE = "ROLE_USER";
 
@@ -79,12 +79,12 @@ public class User {
         this.password = password;
     }
 
-    public List<Todo> getTodoList() {
-        return todoList;
+    public List<Task> getTodoList() {
+        return taskList;
     }
 
-    public void setTodoList(List<Todo> todoList) {
-        this.todoList = todoList;
+    public void setTodoList(List<Task> taskList) {
+        this.taskList = taskList;
     }
 
     public String getROLE() {

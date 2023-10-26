@@ -4,21 +4,21 @@ import com.api.model.User;
 
 import java.util.Objects;
 
-public class TodoDTO {
+public class TaskDTO {
     private String name;
     private String description;
     private boolean isCompleted;
-    private String todoUniqueKey;
+    private String taskUniqueKey;
     private String username;
     private User todoOwner;
 
-    public TodoDTO() {}
+    public TaskDTO() {}
 
-    public TodoDTO(String name, boolean isCompleted, String todoUniqueKey, String username, String description) {
+    public TaskDTO(String name, boolean isCompleted, String taskUniqueKey, String username, String description) {
         this.name = name;
         this.description = description;
         this.isCompleted = isCompleted;
-        this.todoUniqueKey = todoUniqueKey;
+        this.taskUniqueKey = taskUniqueKey;
         this.username = username;
     }
 
@@ -40,12 +40,12 @@ public class TodoDTO {
         isCompleted = completed;
     }
 
-    public String getTodoUniqueKey() {
-        return todoUniqueKey;
+    public String getTaskUniqueKey() {
+        return taskUniqueKey;
     }
 
-    public void setTodoUniqueKey(String todoUniqueKey) {
-        this.todoUniqueKey = todoUniqueKey;
+    public void setTaskUniqueKey(String taskUniqueKey) {
+        this.taskUniqueKey = taskUniqueKey;
     }
 
     public String getUsername() {
@@ -68,21 +68,21 @@ public class TodoDTO {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        TodoDTO todo = (TodoDTO) obj;
+        TaskDTO todo = (TaskDTO) obj;
         return isCompleted == todo.isCompleted &&
                 Objects.equals(name, todo.name) &&
                 Objects.equals(description, todo.description) &&
                 Objects.equals(username, todo.username) &&
-                Objects.equals(todoUniqueKey, todo.todoUniqueKey);
+                Objects.equals(taskUniqueKey, todo.taskUniqueKey);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, username, isCompleted, todoUniqueKey);
+        return Objects.hash(name, description, username, isCompleted, taskUniqueKey);
     }
 
     @Override
     public String toString() {
-        return name + ", "+description+", " + isCompleted + ", " + todoUniqueKey;
+        return name + ", "+description+", " + isCompleted + ", " + taskUniqueKey;
     }
 }

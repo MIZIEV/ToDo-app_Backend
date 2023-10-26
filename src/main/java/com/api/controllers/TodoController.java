@@ -1,142 +1,79 @@
 package com.api.controllers;
 
-import com.api.dto.TodoDTO;
+import com.api.dto.TodoDto;
+import com.api.model.Task;
 import com.api.model.Todo;
-import com.api.model.User;
 import com.api.services.TodoService;
-import com.api.services.impl.TodoServiceImpl;
-import com.api.services.UserService;
-import com.api.exception.EmptyFieldException;
-import com.api.exception.ErrorResponse;
+import com.api.services.impl.TaskServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin("*")
 @RestController
-@RequestMapping("/api")
+@CrossOrigin("*")
+@RequestMapping("/api/todo")
 public class TodoController {
 
     private final TodoService todoService;
-    private final UserService userService;
+    private final TaskServiceImpl todoServiceImpl;
 
     @Autowired
-    public TodoController(TodoServiceImpl service, UserService userService) {
-        this.todoService = service;
-        this.userService = userService;
+    public TodoController(TodoService todoService, TaskServiceImpl todoServiceImpl) {
+        this.todoService = todoService;
+        this.todoServiceImpl = todoServiceImpl;
     }
 
-    @GetMapping("/todos/{username}")
-    public List<TodoDTO> getAllInCompletedTodos(@PathVariable String username) {
-        User user = userService.getUserByUsername(username);
+    @PostMapping("/add/{taskUniqueKey}")
+    public ResponseEntity<HttpStatus> saveNewElement(@PathVariable String taskUniqueKey,
+                                                     @RequestBody TodoDto todoDto) {
 
-        List<Todo> rawList = user.getTodoList();
-        ArrayList<TodoDTO> readyList = new ArrayList<>();
+        Task ownerTask = todoServiceImpl.getTodoByUniqueKey(taskUniqueKey);
+        Todo todo = convertToTodoElement(todoDto);
+        todo.setTodoOwner(ownerTask);
 
-        if (rawList != null) {
-            for (Todo todo : rawList) {
-                readyList.add(convertToTodoDTO(todo));
-            }
-        } else {
-            return null;
+        todoService.saveElement(todo);
+
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @GetMapping("/list/{todoUniqueKey}")
+    public List<TodoDto> getAllElements(@PathVariable String todoUniqueKey) {
+        List<Todo> rawList = todoServiceImpl.getTodoByUniqueKey(todoUniqueKey).getElementsList();
+        List<TodoDto> readyList = new ArrayList<>();
+
+        for (Todo todo : rawList) {
+            readyList.add(convertToTodoElementDto(todo));
         }
-        return readyList.stream().filter(todoDTO -> !todoDTO.isCompleted()).toList();
+        return readyList;
     }
 
-    @GetMapping("/todos-completed/{username}")
-    public List<TodoDTO> getAllCompletedTodo(@PathVariable String username) {
-        User user = userService.getUserByUsername(username);
-
-        List<Todo> rawList = user.getTodoList();
-        ArrayList<TodoDTO> readyList = new ArrayList<>();
-
-        if (rawList != null) {
-            for (Todo todo : rawList) {
-                readyList.add(convertToTodoDTO(todo));
-            }
-        } else {
-            return null;
-        }
-        return readyList.stream().filter(TodoDTO::isCompleted).toList();
+    @PatchMapping("/change-status/{id}")
+    public ResponseEntity<HttpStatus> changeCompleteStatus(@PathVariable Long id) {
+        todoService.changeCompleteStatus(id);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @GetMapping("/todo/{todoUniqueKey}")
-    public TodoDTO getTodoByUniqueKey(@PathVariable String todoUniqueKey) {
-        TodoDTO todoDTO = convertToTodoDTO(todoService.getTodoByUniqueKey(todoUniqueKey));
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity<HttpStatus> deleteElement(@PathVariable Long id){
 
-        return todoDTO;
-    }
-
-    @PutMapping("/todo/{todoUniqueKey}")
-    public ResponseEntity<HttpStatus> updateTodo(@RequestBody TodoDTO updatedTodo,
-                                                 @PathVariable String todoUniqueKey) {
-        todoService.updateTodo(convertToTodo(updatedTodo), todoUniqueKey);
+        todoService.deleteElement(id);
 
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PatchMapping("/todo/complete/{todoUniqueKey}")
-    public ResponseEntity<HttpStatus> changeCompletedStatus(@PathVariable String todoUniqueKey) {
-        todoService.changeCompletedStatus(todoUniqueKey);
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @PostMapping("/add")
-    public ResponseEntity<HttpStatus> saveTodo(@RequestBody TodoDTO todoDTO) {
-
-        User user = userService.getUserByUsername(todoDTO.getUsername());
-        Todo newTodo = convertToTodo(todoDTO);
-        newTodo.setUser(user);
-
-        todoService.saveNewTodo(newTodo);
-
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @DeleteMapping("/todo/{todoUniqueKey}")
-    public ResponseEntity<HttpStatus> deleteTodo(@PathVariable String todoUniqueKey) {
-        todoService.deleteTodo(todoUniqueKey);
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @DeleteMapping("/todos/delete")
-    public ResponseEntity<HttpStatus> deleteAllTodos() {
-        todoService.deleteAllTodos();
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @DeleteMapping("/todos/delete_completed")
-    public ResponseEntity<HttpStatus> deleteCompletedTodo() {
-        todoService.deleteCompletedTodo();
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    private Todo convertToTodo(TodoDTO todoDTO) {
+    private Todo convertToTodoElement(TodoDto todoDto) {
         ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(todoDTO, Todo.class);
+        return modelMapper.map(todoDto, Todo.class);
     }
 
-    private TodoDTO convertToTodoDTO(Todo todo) {
-        TodoDTO todoDTO = new TodoDTO();
+    private TodoDto convertToTodoElementDto(Todo todo) {
+        ModelMapper modelMapper = new ModelMapper();
 
-        todoDTO.setName(todo.getName());
-        todoDTO.setDescription(todo.getDescription());
-        todoDTO.setUsername(todo.getUser().getUsername());
-        todoDTO.setCompleted(todo.isCompleted());
-        todoDTO.setTodoUniqueKey(todo.getTodoUniqueKey());
-
-        return todoDTO;
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(EmptyFieldException exception) {
-        ErrorResponse response = new ErrorResponse("Text field mustn't be empty!", LocalDateTime.now());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return modelMapper.map(todo, TodoDto.class);
     }
 }

@@ -1,13 +1,13 @@
 package com.api.repositories;
 
-import com.api.model.TodoElement;
+import com.api.model.Todo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface TodoElementRepository extends JpaRepository<TodoElement, Long> {
+public interface TodoRepository extends JpaRepository<Todo, Long> {
 
-    Optional<TodoElement> findById(Long id);
+    Optional<Todo> findById(Long id);
 }

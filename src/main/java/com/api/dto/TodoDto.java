@@ -2,16 +2,14 @@ package com.api.dto;
 
 import java.util.Objects;
 
-public class TodoElementDto {
-
+public class TodoDto {
     private Long id;
     private String elementName;
     private boolean isCompleted;
 
-    public TodoElementDto() {
-    }
+    public TodoDto() {}
 
-    public TodoElementDto(Long id, String elementName, boolean isCompleted) {
+    public TodoDto(Long id, String elementName, boolean isCompleted) {
         this.id = id;
         this.elementName = elementName;
         this.isCompleted = isCompleted;
@@ -50,7 +48,7 @@ public class TodoElementDto {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        TodoElementDto myClass = (TodoElementDto) obj;
+        TodoDto myClass = (TodoDto) obj;
         return Objects.equals(id, myClass.id) && Objects.equals(elementName, myClass.elementName) && isCompleted == myClass.isCompleted;
     }
 
