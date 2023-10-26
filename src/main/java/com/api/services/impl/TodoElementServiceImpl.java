@@ -50,6 +50,12 @@ public class TodoElementServiceImpl implements TodoElementService {
     }
 
     @Override
+    @Transactional(readOnly = false)
+    public void deleteElement(Long id) {
+        elementRepository.delete(getElementById(id));
+    }
+
+    @Override
     public TodoElement getElementById(Long id) {
         TodoElement todoElement = elementRepository.getReferenceById(id);
         return todoElement;

@@ -58,6 +58,14 @@ public class TodoElementController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity<HttpStatus> deleteElement(@PathVariable Long id){
+
+        todoElementService.deleteElement(id);
+
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
     private TodoElement convertToTodoElement(TodoElementDto todoElementDto) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(todoElementDto, TodoElement.class);

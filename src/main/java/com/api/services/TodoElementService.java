@@ -13,4 +13,6 @@ public interface TodoElementService {
     List<TodoElement> elementsList(String todoUniqueKey);
 
     void changeCompleteStatus(Long id);
+
+    void deleteElement(Long id);
 }

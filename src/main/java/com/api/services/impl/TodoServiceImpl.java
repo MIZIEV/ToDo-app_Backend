@@ -3,6 +3,7 @@ package com.api.services.impl;
 import com.api.model.Todo;
 import com.api.repositories.TodosRepository;
 import com.api.exception.EmptyFieldException;
+import com.api.services.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-public class TodoServiceImpl implements TodoService{
+public class TodoServiceImpl implements TodoService {
 
     private final TodosRepository todoRepository;
 
