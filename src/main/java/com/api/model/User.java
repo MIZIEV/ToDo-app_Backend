@@ -2,6 +2,7 @@ package com.api.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +26,7 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @JsonManagedReference
     private List<Task> taskList;
 
