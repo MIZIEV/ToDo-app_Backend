@@ -41,11 +41,11 @@ public class TaskController {
 
         taskService.saveNewTask(newTask);
 
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
     @GetMapping("/list/{username}")
-    public List<TaskDTO> getAllInCompletedTask(@PathVariable String username) {
+    public ResponseEntity<?> getAllInCompletedTask(@PathVariable String username) {
         User user = userService.getUserByUsername(username);
 
         List<Task> rawList = user.getTodoList();
@@ -58,11 +58,12 @@ public class TaskController {
         } else {
             return null;
         }
-        return readyList.stream().filter(taskDTO -> !taskDTO.isCompleted()).toList();
+
+        return new ResponseEntity<>(readyList.stream().filter(taskDTO -> !taskDTO.isCompleted()).toList(), HttpStatus.OK);
     }
 
     @GetMapping("/list-completed/{username}")
-    public List<TaskDTO> getAllCompletedTask(@PathVariable String username) {
+    public ResponseEntity<?> getAllCompletedTask(@PathVariable String username) {
         User user = userService.getUserByUsername(username);
 
         List<Task> rawList = user.getTodoList();
@@ -75,14 +76,14 @@ public class TaskController {
         } else {
             return null;
         }
-        return readyList.stream().filter(TaskDTO::isCompleted).toList();
+        return new ResponseEntity<>(readyList.stream().filter(TaskDTO::isCompleted).toList(),HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public TaskDTO getTaskById(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getTaskById(@PathVariable("id") Long id) {
         TaskDTO taskDTO = convertToTaskDTO(taskService.getTaskById(id));
 
-        return taskDTO;
+        return new ResponseEntity<>(taskDTO,HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
