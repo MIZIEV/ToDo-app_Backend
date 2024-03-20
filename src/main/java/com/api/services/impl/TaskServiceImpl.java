@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -35,12 +36,17 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = false)
-    public void updateTodo(Task editedTask, String todoUniqueKey) {
+    public void updateTodo(Task editedTask, Long id) {
 
-        /*Task taskForUpdating = todoRepository.findByTaskUniqueKey(todoUniqueKey);
-        taskForUpdating.setName(editedTask.getName());
-        taskForUpdating.setDescription(editedTask.getDescription());
-        todoRepository.save(taskForUpdating);*/
+        Optional<Task> taskForUpdating = todoRepository.findById(id);
+
+        if (taskForUpdating.isPresent()) {
+            taskForUpdating.get().setName(editedTask.getName());
+            taskForUpdating.get().setDescription(editedTask.getDescription());
+            todoRepository.save(taskForUpdating.get());
+        } else {
+            throw null; // todo create exception!!!
+        }
     }
 
     @Override
@@ -71,6 +77,7 @@ public class TaskServiceImpl implements TaskService {
         List<Task> completedTasks = todoRepository.findAllByIsCompleted(true);
         todoRepository.deleteAll(completedTasks);
     }
+
     @Override
     @Transactional(readOnly = true)
     public Task getTodoByUniqueKey(String uniqueKey) {

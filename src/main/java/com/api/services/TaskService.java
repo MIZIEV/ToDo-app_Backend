@@ -4,7 +4,7 @@ import com.api.model.Task;
 
 public interface TaskService {
     void saveNewTodo(Task task);
-    void updateTodo(Task editedTask, String todoUniqueKey);
+    void updateTodo(Task editedTask, Long id);
     void changeCompletedStatus(String todoUniqueKey);
     void deleteTodo(String key);
     void deleteAllTodos();

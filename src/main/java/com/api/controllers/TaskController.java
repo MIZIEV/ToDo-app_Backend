@@ -73,12 +73,12 @@ public class TaskController {
         return taskDTO;
     }
 
-    @PutMapping("/task/{taskUniqueKey}")
-    public ResponseEntity<HttpStatus> updateTodo(@RequestBody TaskDTO updatedTodo,
-                                                 @PathVariable String taskUniqueKey) {
-        taskService.updateTodo(convertToTodo(updatedTodo), taskUniqueKey);
+    @PutMapping("/task/{id}")
+    public ResponseEntity<?> updateTodo(@RequestBody TaskDTO updatedTodo,
+                                        @PathVariable("id") Long id) {
+        taskService.updateTodo(convertToTodo(updatedTodo), id);
 
-        return ResponseEntity.ok(HttpStatus.OK);
+        return new ResponseEntity<>("Task with id - " + id + " was updated.", HttpStatus.OK);
     }
 
     @PatchMapping("/task/complete/{taskUniqueKey}")

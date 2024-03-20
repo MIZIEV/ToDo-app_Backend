@@ -1,6 +1,7 @@
 package com.api.dto;
 
 import com.api.model.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
@@ -34,6 +35,7 @@ public class TaskDTO {
         return isCompleted;
     }
 
+    @JsonProperty("isCompleted")
     public void setCompleted(boolean completed) {
         isCompleted = completed;
     }
