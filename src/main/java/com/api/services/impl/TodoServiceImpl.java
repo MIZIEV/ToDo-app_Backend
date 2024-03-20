@@ -32,8 +32,8 @@ public class TodoServiceImpl implements TodoService {
     @Override
     @Transactional(readOnly = true)
     public List<Todo> elementsList(String taskUniqueKey) {
-        List<Todo> elements = taskRepository.findByTaskUniqueKey(taskUniqueKey).getTodoList();
-        return elements;
+        //List<Todo> elements = taskRepository.findByTaskUniqueKey(taskUniqueKey).getTodoList();
+        return null;
     }
 
     @Override

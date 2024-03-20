@@ -129,7 +129,6 @@ public class TaskController {
         taskDTO.setDescription(task.getDescription());
         taskDTO.setUsername(task.getUser().getUsername());
         taskDTO.setCompleted(task.isCompleted());
-        taskDTO.setTaskUniqueKey(task.getTaskUniqueKey());
 
         return taskDTO;
     }

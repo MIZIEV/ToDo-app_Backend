@@ -8,8 +8,6 @@ import java.util.List;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Integer> {
-    Task findByTaskUniqueKey(String taskUniqueKey);
-
     Task findByName(String todoName);
     List<Task> findAllByIsCompleted(boolean isCompleted);
 }

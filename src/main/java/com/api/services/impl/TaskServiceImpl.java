@@ -37,10 +37,10 @@ public class TaskServiceImpl implements TaskService {
     @Transactional(readOnly = false)
     public void updateTodo(Task editedTask, String todoUniqueKey) {
 
-        Task taskForUpdating = todoRepository.findByTaskUniqueKey(todoUniqueKey);
+        /*Task taskForUpdating = todoRepository.findByTaskUniqueKey(todoUniqueKey);
         taskForUpdating.setName(editedTask.getName());
         taskForUpdating.setDescription(editedTask.getDescription());
-        todoRepository.save(taskForUpdating);
+        todoRepository.save(taskForUpdating);*/
     }
 
     @Override
@@ -74,7 +74,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(readOnly = true)
     public Task getTodoByUniqueKey(String uniqueKey) {
-        return todoRepository.findByTaskUniqueKey(uniqueKey);
+        return null;
     }
 
     private void enrichTodo(Task task) {
