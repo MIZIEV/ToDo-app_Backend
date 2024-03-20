@@ -20,7 +20,7 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/task")
 public class TaskController {
 
     private final TaskService taskService;
@@ -32,7 +32,19 @@ public class TaskController {
         this.userService = userService;
     }
 
-    @GetMapping("/tasks/{username}")
+    @PostMapping("/add")
+    public ResponseEntity<HttpStatus> saveTask(@RequestBody TaskDTO taskDTO) {
+
+        User user = userService.getUserByUsername(taskDTO.getUsername());
+        Task newTask = convertToTask(taskDTO);
+        newTask.setUser(user);
+
+        taskService.saveNewTask(newTask);
+
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @GetMapping("/list/{username}")
     public List<TaskDTO> getAllInCompletedTask(@PathVariable String username) {
         User user = userService.getUserByUsername(username);
 
@@ -49,7 +61,7 @@ public class TaskController {
         return readyList.stream().filter(taskDTO -> !taskDTO.isCompleted()).toList();
     }
 
-    @GetMapping("/tasks-completed/{username}")
+    @GetMapping("/list-completed/{username}")
     public List<TaskDTO> getAllCompletedTask(@PathVariable String username) {
         User user = userService.getUserByUsername(username);
 
@@ -66,14 +78,14 @@ public class TaskController {
         return readyList.stream().filter(TaskDTO::isCompleted).toList();
     }
 
-    @GetMapping("/task/{id}")
+    @GetMapping("/{id}")
     public TaskDTO getTaskById(@PathVariable("id") Long id) {
         TaskDTO taskDTO = convertToTaskDTO(taskService.getTaskById(id));
 
         return taskDTO;
     }
 
-    @PutMapping("/task/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateTask(@RequestBody TaskDTO updatedTodo,
                                         @PathVariable("id") Long id) {
         taskService.updateTask(convertToTask(updatedTodo), id);
@@ -81,21 +93,9 @@ public class TaskController {
         return new ResponseEntity<>("Task with id - " + id + " was updated.", HttpStatus.OK);
     }
 
-    @PatchMapping("/task/complete/{id}")
+    @PatchMapping("/complete/{id}")
     public ResponseEntity<HttpStatus> changeCompletedStatus(@PathVariable("id") Long id) {
         taskService.changeCompletedStatus(id);
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @PostMapping("/add")
-    public ResponseEntity<HttpStatus> saveTask(@RequestBody TaskDTO taskDTO) {
-
-        User user = userService.getUserByUsername(taskDTO.getUsername());
-        Task newTask = convertToTask(taskDTO);
-        newTask.setUser(user);
-
-        taskService.saveNewTask(newTask);
-
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
