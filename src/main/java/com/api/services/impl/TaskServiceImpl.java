@@ -25,7 +25,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = false)
-    public void saveNewTodo(Task task) {
+    public void saveNewTask(Task task) {
         if (task.getName() == null) {
             throw new EmptyFieldException("EmptyFieldException: Field \"text\" is empty ");
         } else {
@@ -36,7 +36,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = false)
-    public void updateTodo(Task editedTask, Long id) {
+    public void updateTask(Task editedTask, Long id) {
 
         Optional<Task> taskForUpdating = todoRepository.findById(id);
 
@@ -51,37 +51,42 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = false)
-    public void changeCompletedStatus(String todoUniqueKey) {
-        Task task = this.getTodoByUniqueKey(todoUniqueKey);
+    public void changeCompletedStatus(Long id) {
+        Task task = this.getTaskById(id);
 
         task.setCompleted(!task.isCompleted());
-        this.saveNewTodo(task);
+        this.saveNewTask(task);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public void deleteTodo(String key) {
-        Task taskForDelete = getTodoByUniqueKey((key));
+    public void deleteTask(Long id) {
+        Task taskForDelete = getTaskById(id);
         todoRepository.delete(taskForDelete);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public void deleteAllTodos() {
+    public void deleteAllTasks() {
         todoRepository.deleteAll();
     }
 
     @Override
     @Transactional(readOnly = false)
-    public void deleteCompletedTodo() {
+    public void deleteCompletedTasks() {
         List<Task> completedTasks = todoRepository.findAllByIsCompleted(true);
         todoRepository.deleteAll(completedTasks);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Task getTodoByUniqueKey(String uniqueKey) {
-        return null;
+    public Task getTaskById(Long id) {
+        Optional<Task> task = todoRepository.findById(id);
+
+        if(task.isPresent()){
+            return task.get();
+        } else {
+            throw null; //todo create exception !!!
+        }
     }
 
     private void enrichTodo(Task task) {

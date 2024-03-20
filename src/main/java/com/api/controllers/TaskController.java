@@ -33,7 +33,7 @@ public class TaskController {
     }
 
     @GetMapping("/tasks/{username}")
-    public List<TaskDTO> getAllInCompletedTodos(@PathVariable String username) {
+    public List<TaskDTO> getAllInCompletedTask(@PathVariable String username) {
         User user = userService.getUserByUsername(username);
 
         List<Task> rawList = user.getTodoList();
@@ -41,7 +41,7 @@ public class TaskController {
 
         if (rawList != null) {
             for (Task task : rawList) {
-                readyList.add(convertToTodoDTO(task));
+                readyList.add(convertToTaskDTO(task));
             }
         } else {
             return null;
@@ -50,7 +50,7 @@ public class TaskController {
     }
 
     @GetMapping("/tasks-completed/{username}")
-    public List<TaskDTO> getAllCompletedTodo(@PathVariable String username) {
+    public List<TaskDTO> getAllCompletedTask(@PathVariable String username) {
         User user = userService.getUserByUsername(username);
 
         List<Task> rawList = user.getTodoList();
@@ -58,7 +58,7 @@ public class TaskController {
 
         if (rawList != null) {
             for (Task task : rawList) {
-                readyList.add(convertToTodoDTO(task));
+                readyList.add(convertToTaskDTO(task));
             }
         } else {
             return null;
@@ -66,63 +66,63 @@ public class TaskController {
         return readyList.stream().filter(TaskDTO::isCompleted).toList();
     }
 
-    @GetMapping("/task/{taskUniqueKey}")
-    public TaskDTO getTodoByUniqueKey(@PathVariable String taskUniqueKey) {
-        TaskDTO taskDTO = convertToTodoDTO(taskService.getTodoByUniqueKey(taskUniqueKey));
+    @GetMapping("/task/{id}")
+    public TaskDTO getTaskById(@PathVariable("id") Long id) {
+        TaskDTO taskDTO = convertToTaskDTO(taskService.getTaskById(id));
 
         return taskDTO;
     }
 
     @PutMapping("/task/{id}")
-    public ResponseEntity<?> updateTodo(@RequestBody TaskDTO updatedTodo,
+    public ResponseEntity<?> updateTask(@RequestBody TaskDTO updatedTodo,
                                         @PathVariable("id") Long id) {
-        taskService.updateTodo(convertToTodo(updatedTodo), id);
+        taskService.updateTask(convertToTask(updatedTodo), id);
 
         return new ResponseEntity<>("Task with id - " + id + " was updated.", HttpStatus.OK);
     }
 
-    @PatchMapping("/task/complete/{taskUniqueKey}")
-    public ResponseEntity<HttpStatus> changeCompletedStatus(@PathVariable String taskUniqueKey) {
-        taskService.changeCompletedStatus(taskUniqueKey);
+    @PatchMapping("/task/complete/{id}")
+    public ResponseEntity<HttpStatus> changeCompletedStatus(@PathVariable("id") Long id) {
+        taskService.changeCompletedStatus(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> saveTodo(@RequestBody TaskDTO taskDTO) {
+    public ResponseEntity<HttpStatus> saveTask(@RequestBody TaskDTO taskDTO) {
 
         User user = userService.getUserByUsername(taskDTO.getUsername());
-        Task newTask = convertToTodo(taskDTO);
+        Task newTask = convertToTask(taskDTO);
         newTask.setUser(user);
 
-        taskService.saveNewTodo(newTask);
+        taskService.saveNewTask(newTask);
 
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @DeleteMapping("/task/{taskUniqueKey}")
-    public ResponseEntity<HttpStatus> deleteTodo(@PathVariable String taskUniqueKey) {
-        taskService.deleteTodo(taskUniqueKey);
+    @DeleteMapping("/task/{id}")
+    public ResponseEntity<HttpStatus> deleteTask(@PathVariable("id") Long id) {
+        taskService.deleteTask(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/tasks/delete")
-    public ResponseEntity<HttpStatus> deleteAllTodos() {
-        taskService.deleteAllTodos();
+    public ResponseEntity<HttpStatus> deleteAllTasks() {
+        taskService.deleteAllTasks();
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/tasks/delete_completed")
-    public ResponseEntity<HttpStatus> deleteCompletedTodo() {
-        taskService.deleteCompletedTodo();
+    public ResponseEntity<HttpStatus> deleteCompletedTasks() {
+        taskService.deleteCompletedTasks();
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    private Task convertToTodo(TaskDTO taskDTO) {
+    private Task convertToTask(TaskDTO taskDTO) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(taskDTO, Task.class);
     }
 
-    private TaskDTO convertToTodoDTO(Task task) {
+    private TaskDTO convertToTaskDTO(Task task) {
         TaskDTO taskDTO = new TaskDTO();
 
         taskDTO.setName(task.getName());
