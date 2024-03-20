@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,7 +25,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = false)
-    public void saveNewTodo(Task task) {
+    public void saveNewTask(Task task) {
         if (task.getName() == null) {
             throw new EmptyFieldException("EmptyFieldException: Field \"text\" is empty ");
         } else {
@@ -35,46 +36,57 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = false)
-    public void updateTodo(Task editedTask, String todoUniqueKey) {
+    public void updateTask(Task editedTask, Long id) {
 
-        Task taskForUpdating = todoRepository.findByTaskUniqueKey(todoUniqueKey);
-        taskForUpdating.setName(editedTask.getName());
-        taskForUpdating.setDescription(editedTask.getDescription());
-        todoRepository.save(taskForUpdating);
+        Optional<Task> taskForUpdating = todoRepository.findById(id);
+
+        if (taskForUpdating.isPresent()) {
+            taskForUpdating.get().setName(editedTask.getName());
+            taskForUpdating.get().setDescription(editedTask.getDescription());
+            todoRepository.save(taskForUpdating.get());
+        } else {
+            throw null; // todo create exception!!!
+        }
     }
 
     @Override
     @Transactional(readOnly = false)
-    public void changeCompletedStatus(String todoUniqueKey) {
-        Task task = this.getTodoByUniqueKey(todoUniqueKey);
+    public void changeCompletedStatus(Long id) {
+        Task task = this.getTaskById(id);
 
         task.setCompleted(!task.isCompleted());
-        this.saveNewTodo(task);
+        this.saveNewTask(task);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public void deleteTodo(String key) {
-        Task taskForDelete = getTodoByUniqueKey((key));
+    public void deleteTask(Long id) {
+        Task taskForDelete = getTaskById(id);
         todoRepository.delete(taskForDelete);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public void deleteAllTodos() {
+    public void deleteAllTasks() {
         todoRepository.deleteAll();
     }
 
     @Override
     @Transactional(readOnly = false)
-    public void deleteCompletedTodo() {
+    public void deleteCompletedTasks() {
         List<Task> completedTasks = todoRepository.findAllByIsCompleted(true);
         todoRepository.deleteAll(completedTasks);
     }
+
     @Override
-    @Transactional(readOnly = true)
-    public Task getTodoByUniqueKey(String uniqueKey) {
-        return todoRepository.findByTaskUniqueKey(uniqueKey);
+    public Task getTaskById(Long id) {
+        Optional<Task> task = todoRepository.findById(id);
+
+        if(task.isPresent()){
+            return task.get();
+        } else {
+            throw null; //todo create exception !!!
+        }
     }
 
     private void enrichTodo(Task task) {

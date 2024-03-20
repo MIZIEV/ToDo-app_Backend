@@ -28,11 +28,11 @@ public class TodoController {
         this.todoServiceImpl = todoServiceImpl;
     }
 
-    @PostMapping("/add/{taskUniqueKey}")
-    public ResponseEntity<HttpStatus> saveNewElement(@PathVariable String taskUniqueKey,
+    @PostMapping("/add/{id}")
+    public ResponseEntity<HttpStatus> saveNewElement(@PathVariable("id") Long id,
                                                      @RequestBody TodoDto todoDto) {
 
-        Task ownerTask = todoServiceImpl.getTodoByUniqueKey(taskUniqueKey);
+        Task ownerTask = todoServiceImpl.getTaskById(id);
         Todo todo = convertToTodoElement(todoDto);
         todo.setTodoOwner(ownerTask);
 
@@ -41,9 +41,9 @@ public class TodoController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @GetMapping("/list/{taskUniqueKey}")
-    public List<TodoDto> getAllElements(@PathVariable String taskUniqueKey) {
-        List<Todo> rawList = todoServiceImpl.getTodoByUniqueKey(taskUniqueKey).getTodoList();
+    @GetMapping("/list/{id}")
+    public List<TodoDto> getAllElements(@PathVariable("id") Long id) {
+        List<Todo> rawList = todoServiceImpl.getTaskById(id).getTodoList();
         List<TodoDto> readyList = new ArrayList<>();
 
         for (Todo todo : rawList) {

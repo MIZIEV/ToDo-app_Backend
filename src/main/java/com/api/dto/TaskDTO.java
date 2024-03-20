@@ -1,6 +1,7 @@
 package com.api.dto;
 
 import com.api.model.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
@@ -8,17 +9,15 @@ public class TaskDTO {
     private String name;
     private String description;
     private boolean isCompleted;
-    private String taskUniqueKey;
     private String username;
     private User todoOwner;
 
     public TaskDTO() {}
 
-    public TaskDTO(String name, boolean isCompleted, String taskUniqueKey, String username, String description) {
+    public TaskDTO(String name, boolean isCompleted, String username, String description) {
         this.name = name;
         this.description = description;
         this.isCompleted = isCompleted;
-        this.taskUniqueKey = taskUniqueKey;
         this.username = username;
     }
 
@@ -36,16 +35,9 @@ public class TaskDTO {
         return isCompleted;
     }
 
+    @JsonProperty("isCompleted")
     public void setCompleted(boolean completed) {
         isCompleted = completed;
-    }
-
-    public String getTaskUniqueKey() {
-        return taskUniqueKey;
-    }
-
-    public void setTaskUniqueKey(String taskUniqueKey) {
-        this.taskUniqueKey = taskUniqueKey;
     }
 
     public String getUsername() {
@@ -72,17 +64,16 @@ public class TaskDTO {
         return isCompleted == todo.isCompleted &&
                 Objects.equals(name, todo.name) &&
                 Objects.equals(description, todo.description) &&
-                Objects.equals(username, todo.username) &&
-                Objects.equals(taskUniqueKey, todo.taskUniqueKey);
+                Objects.equals(username, todo.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, username, isCompleted, taskUniqueKey);
+        return Objects.hash(name, description, username, isCompleted);
     }
 
     @Override
     public String toString() {
-        return name + ", "+description+", " + isCompleted + ", " + taskUniqueKey;
+        return name + ", "+description+", " + isCompleted;
     }
 }
