@@ -31,7 +31,7 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> saveTask(@RequestBody TaskDTO taskDTO) {
+    public ResponseEntity<?> saveTask(@RequestBody TaskDTO taskDTO) {
 
         User user = userService.getUserByUsername(taskDTO.getUsername());
         Task newTask = convertToTask(taskDTO);
@@ -39,7 +39,7 @@ public class TaskController {
 
         taskService.saveNewTask(newTask);
 
-        return ResponseEntity.ok(HttpStatus.CREATED);
+        return new ResponseEntity<>(taskDTO,HttpStatus.CREATED);
     }
 
     @GetMapping("/list/{username}")
@@ -74,14 +74,14 @@ public class TaskController {
         } else {
             return null;
         }
-        return new ResponseEntity<>(readyList.stream().filter(TaskDTO::isCompleted).toList(),HttpStatus.OK);
+        return new ResponseEntity<>(readyList.stream().filter(TaskDTO::isCompleted).toList(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getTaskById(@PathVariable("id") Long id) {
         TaskDTO taskDTO = convertToTaskDTO(taskService.getTaskById(id));
 
-        return new ResponseEntity<>(taskDTO,HttpStatus.OK);
+        return new ResponseEntity<>(taskDTO, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
@@ -99,9 +99,9 @@ public class TaskController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpStatus> deleteTask(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteTask(@PathVariable("id") Long id) {
         taskService.deleteTask(id);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return new ResponseEntity<>("Task with id - " + id + " was deleted successfully!", HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/tasks/delete")
