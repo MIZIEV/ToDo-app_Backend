@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/api/todo")
+@RequestMapping("/api/task/{id}/todo")
 public class TodoController {
 
     private final TodoService todoService;
@@ -28,9 +28,9 @@ public class TodoController {
         this.todoServiceImpl = todoServiceImpl;
     }
 
-    @PostMapping("/add/{id}")
-    public ResponseEntity<HttpStatus> saveNewElement(@PathVariable("id") Long id,
-                                                     @RequestBody TodoDto todoDto) {
+    @PostMapping("/add")
+    public ResponseEntity<HttpStatus> saveNewTodo(@PathVariable("id") Long id,
+                                                  @RequestBody TodoDto todoDto) {
 
         Task ownerTask = todoServiceImpl.getTaskById(id);
         Todo todo = convertToTodoElement(todoDto);
@@ -41,8 +41,8 @@ public class TodoController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @GetMapping("/list/{id}")
-    public List<TodoDto> getAllElements(@PathVariable("id") Long id) {
+    @GetMapping("/list")
+    public List<TodoDto> getAllTodos(@PathVariable("id") Long id) {
         List<Todo> rawList = todoServiceImpl.getTaskById(id).getTodoList();
         List<TodoDto> readyList = new ArrayList<>();
 
@@ -52,13 +52,13 @@ public class TodoController {
         return readyList;
     }
 
-    @PatchMapping("/change-status/{id}")
+    @PatchMapping("/change-status")
     public ResponseEntity<HttpStatus> changeCompleteStatus(@PathVariable Long id) {
         todoService.changeCompleteStatus(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @DeleteMapping("/remove/{id}")
+    @DeleteMapping("/remove")
     public ResponseEntity<HttpStatus> deleteElement(@PathVariable Long id){
 
         todoService.deleteElement(id);
