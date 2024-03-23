@@ -36,7 +36,7 @@ public class TodoController {
         Todo todo = convertToTodoElement(todoDto);
         todo.setTodoOwner(ownerTask);
 
-        todoService.saveElement(todo);
+        todoService.saveTodo(todo);
 
         return new ResponseEntity<>(todo,HttpStatus.CREATED);
     }
@@ -61,7 +61,7 @@ public class TodoController {
     @DeleteMapping("/{todoId}")
     public ResponseEntity<HttpStatus> deleteTodo(@PathVariable("todoId") Long todoId){
 
-        todoService.deleteElement(todoId);
+        todoService.deleteTodo(todoId);
 
         return ResponseEntity.ok(HttpStatus.OK);
     }

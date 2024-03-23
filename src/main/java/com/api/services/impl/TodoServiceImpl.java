@@ -25,7 +25,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     @Transactional(readOnly = false)
-    public void saveElement(Todo todo) {
+    public void saveTodo(Todo todo) {
         elementRepository.save(todo);
     }
 
@@ -51,12 +51,12 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     @Transactional(readOnly = false)
-    public void deleteElement(Long id) {
-        elementRepository.delete(getElementById(id));
+    public void deleteTodo(Long id) {
+        elementRepository.delete(getTodoById(id));
     }
 
     @Override
-    public Todo getElementById(Long id) {
+    public Todo getTodoById(Long id) {
         Todo todo = elementRepository.getReferenceById(id);
         return todo;
     }

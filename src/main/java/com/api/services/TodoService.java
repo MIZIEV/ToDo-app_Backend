@@ -6,13 +6,13 @@ import java.util.List;
 
 public interface TodoService {
 
-    void saveElement(Todo todo);
+    void saveTodo(Todo todo);
 
-    Todo getElementById(Long id);
+    Todo getTodoById(Long id);
 
     List<Todo> elementsList(String todoUniqueKey);
 
     void changeCompleteStatus(Long id);
 
-    void deleteElement(Long id);
+    void deleteTodo(Long id);
 }
