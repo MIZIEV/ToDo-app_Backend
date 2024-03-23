@@ -52,16 +52,16 @@ public class TodoController {
         return readyList;
     }
 
-    @PatchMapping("/change-status")
-    public ResponseEntity<HttpStatus> changeCompleteStatus(@PathVariable Long id) {
-        todoService.changeCompleteStatus(id);
+    @PatchMapping("/{todoId}")
+    public ResponseEntity<HttpStatus> changeCompleteStatus(@PathVariable("todoId") Long todoId) {
+        todoService.changeCompleteStatus(todoId);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @DeleteMapping("/remove")
-    public ResponseEntity<HttpStatus> deleteElement(@PathVariable Long id){
+    @DeleteMapping("/{todoId}")
+    public ResponseEntity<HttpStatus> deleteTodo(@PathVariable("todoId") Long todoId){
 
-        todoService.deleteElement(id);
+        todoService.deleteElement(todoId);
 
         return ResponseEntity.ok(HttpStatus.OK);
     }
