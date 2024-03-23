@@ -6,12 +6,14 @@ import com.api.model.User;
 import com.api.services.TaskService;
 import com.api.services.impl.TaskServiceImpl;
 import com.api.services.UserService;
-import com.api.util.exception.EmptyFieldException;
-import com.api.util.exception.ErrorResponse;
+import com.api.util.exception.TaskManagerApiException;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -33,15 +35,27 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> saveTask(@RequestBody TaskDTO taskDTO) {
+    public ResponseEntity<?> saveTask(@Valid @RequestBody TaskDTO taskDTO, BindingResult result) {
 
-        User user = userService.getUserByUsername(taskDTO.getUsername());
-        Task newTask = convertToTask(taskDTO);
-        newTask.setUser(user);
+        if (result.hasErrors()) {
 
-        taskService.saveNewTask(newTask);
+            StringBuffer errorMessage = new StringBuffer("Validation exception: ");
 
-        return ResponseEntity.ok(HttpStatus.CREATED);
+            for (FieldError fieldError : result.getFieldErrors()) {
+                errorMessage.append(fieldError.getField()).append(": ")
+                        .append(fieldError.getDefaultMessage()).append("; ");
+            }
+
+            throw new TaskManagerApiException(errorMessage.toString(), HttpStatus.BAD_REQUEST);
+        } else {
+            User user = userService.getUserByUsername(taskDTO.getUsername());
+            Task newTask = convertToTask(taskDTO);
+            newTask.setUser(user);
+
+            taskService.saveNewTask(newTask);
+
+            return new ResponseEntity<>(taskDTO, HttpStatus.CREATED);
+        }
     }
 
     @GetMapping("/list/{username}")
@@ -76,14 +90,14 @@ public class TaskController {
         } else {
             return null;
         }
-        return new ResponseEntity<>(readyList.stream().filter(TaskDTO::isCompleted).toList(),HttpStatus.OK);
+        return new ResponseEntity<>(readyList.stream().filter(TaskDTO::isCompleted).toList(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getTaskById(@PathVariable("id") Long id) {
         TaskDTO taskDTO = convertToTaskDTO(taskService.getTaskById(id));
 
-        return new ResponseEntity<>(taskDTO,HttpStatus.OK);
+        return new ResponseEntity<>(taskDTO, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
@@ -101,9 +115,9 @@ public class TaskController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<HttpStatus> deleteTask(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteTask(@PathVariable("id") Long id) {
         taskService.deleteTask(id);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return new ResponseEntity<>("Task with id - " + id + " was deleted successfully!", HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/tasks/delete")
@@ -132,11 +146,5 @@ public class TaskController {
         taskDTO.setCompleted(task.isCompleted());
 
         return taskDTO;
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(EmptyFieldException exception) {
-        ErrorResponse response = new ErrorResponse("Text field mustn't be empty!", LocalDateTime.now());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

@@ -2,13 +2,20 @@ package com.api.dto;
 
 import com.api.model.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 
 public class TaskDTO {
+    @NotNull(message = "The field `name` mustn't be empty!")
+    @Size(min = 4, message = "The field `name` must be longer than 4 characters!")
     private String name;
+    @NotNull(message = "The field `description` mustn't be empty!")
+    @Size(min = 5, message = "The field `description` must be longer than 5 characters!")
     private String description;
     private boolean isCompleted;
+    @NotNull(message = "The field `username` mustn't be empty!")
     private String username;
     private User todoOwner;
 
@@ -21,15 +28,21 @@ public class TaskDTO {
         this.username = username;
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getDescription() { return description; }
+    public String getDescription() {
+        return description;
+    }
 
-    public void setDescription(String description) { this.description = description; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public boolean isCompleted() {
         return isCompleted;
@@ -74,6 +87,6 @@ public class TaskDTO {
 
     @Override
     public String toString() {
-        return name + ", "+description+", " + isCompleted;
+        return name + ", " + description + ", " + isCompleted;
     }
 }
