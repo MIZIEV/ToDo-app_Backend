@@ -6,10 +6,14 @@ import com.api.model.User;
 import com.api.services.TaskService;
 import com.api.services.impl.TaskServiceImpl;
 import com.api.services.UserService;
+import com.api.util.exception.TaskManagerApiException;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -31,15 +35,27 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> saveTask(@RequestBody TaskDTO taskDTO) {
+    public ResponseEntity<?> saveTask(@Valid @RequestBody TaskDTO taskDTO, BindingResult result) {
 
-        User user = userService.getUserByUsername(taskDTO.getUsername());
-        Task newTask = convertToTask(taskDTO);
-        newTask.setUser(user);
+        if (result.hasErrors()) {
 
-        taskService.saveNewTask(newTask);
+            StringBuffer errorMessage = new StringBuffer("Validation exception: ");
 
-        return new ResponseEntity<>(taskDTO,HttpStatus.CREATED);
+            for (FieldError fieldError : result.getFieldErrors()) {
+                errorMessage.append(fieldError.getField()).append(": ")
+                        .append(fieldError.getDefaultMessage()).append("; ");
+            }
+
+            throw new TaskManagerApiException(errorMessage.toString(), HttpStatus.BAD_REQUEST);
+        } else {
+            User user = userService.getUserByUsername(taskDTO.getUsername());
+            Task newTask = convertToTask(taskDTO);
+            newTask.setUser(user);
+
+            taskService.saveNewTask(newTask);
+
+            return new ResponseEntity<>(taskDTO, HttpStatus.CREATED);
+        }
     }
 
     @GetMapping("/list/{username}")
