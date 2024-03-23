@@ -29,7 +29,7 @@ public class TodoController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<HttpStatus> saveNewTodo(@PathVariable("id") Long id,
+    public ResponseEntity<?> saveNewTodo(@PathVariable("id") Long id,
                                                   @RequestBody TodoDto todoDto) {
 
         Task ownerTask = todoServiceImpl.getTaskById(id);
@@ -38,18 +38,18 @@ public class TodoController {
 
         todoService.saveElement(todo);
 
-        return ResponseEntity.ok(HttpStatus.OK);
+        return new ResponseEntity<>(todo,HttpStatus.CREATED);
     }
 
     @GetMapping("/list")
-    public List<TodoDto> getAllTodos(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getAllTodos(@PathVariable("id") Long id) {
         List<Todo> rawList = todoServiceImpl.getTaskById(id).getTodoList();
         List<TodoDto> readyList = new ArrayList<>();
 
         for (Todo todo : rawList) {
             readyList.add(convertToTodoElementDto(todo));
         }
-        return readyList;
+        return new ResponseEntity<>(readyList,HttpStatus.OK);
     }
 
     @PatchMapping("/{todoId}")
