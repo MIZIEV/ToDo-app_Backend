@@ -28,7 +28,7 @@ public class Task {
     @JsonBackReference
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-    @OneToMany(mappedBy = "taskOwner")
+    @OneToMany(mappedBy = "taskOwner",cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Todo> todoList;
 

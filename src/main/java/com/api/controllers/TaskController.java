@@ -6,8 +6,8 @@ import com.api.model.User;
 import com.api.services.TaskService;
 import com.api.services.impl.TaskServiceImpl;
 import com.api.services.UserService;
-import com.api.exception.EmptyFieldException;
-import com.api.exception.ErrorResponse;
+import com.api.util.exception.EmptyFieldException;
+import com.api.util.exception.ErrorResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -100,7 +100,7 @@ public class TaskController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @DeleteMapping("/task/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable("id") Long id) {
         taskService.deleteTask(id);
         return ResponseEntity.ok(HttpStatus.OK);
