@@ -1,4 +1,4 @@
-package com.api.exception;
+package com.api.util.exception;
 
 public class EmptyFieldException extends RuntimeException{
 

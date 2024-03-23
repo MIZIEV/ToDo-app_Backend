@@ -2,9 +2,11 @@ package com.api.services.impl;
 
 import com.api.model.Task;
 import com.api.repositories.TaskRepository;
-import com.api.exception.EmptyFieldException;
+import com.api.util.exception.EmptyFieldException;
 import com.api.services.TaskService;
+import com.api.util.exception.TaskManagerApiException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +47,7 @@ public class TaskServiceImpl implements TaskService {
             taskForUpdating.get().setDescription(editedTask.getDescription());
             todoRepository.save(taskForUpdating.get());
         } else {
-            throw null; // todo create exception!!!
+            throw new TaskManagerApiException("Task with id - " + id + " not found!", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -82,10 +84,10 @@ public class TaskServiceImpl implements TaskService {
     public Task getTaskById(Long id) {
         Optional<Task> task = todoRepository.findById(id);
 
-        if(task.isPresent()){
+        if (task.isPresent()) {
             return task.get();
         } else {
-            throw null; //todo create exception !!!
+            throw new TaskManagerApiException("Task with id - " + id + " not found!", HttpStatus.NOT_FOUND);
         }
     }
 

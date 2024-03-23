@@ -6,8 +6,6 @@ import com.api.model.User;
 import com.api.services.TaskService;
 import com.api.services.impl.TaskServiceImpl;
 import com.api.services.UserService;
-import com.api.exception.EmptyFieldException;
-import com.api.exception.ErrorResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -100,7 +98,7 @@ public class TaskController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @DeleteMapping("/task/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable("id") Long id) {
         taskService.deleteTask(id);
         return ResponseEntity.ok(HttpStatus.OK);
@@ -132,11 +130,5 @@ public class TaskController {
         taskDTO.setCompleted(task.isCompleted());
 
         return taskDTO;
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(EmptyFieldException exception) {
-        ErrorResponse response = new ErrorResponse("Text field mustn't be empty!", LocalDateTime.now());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
