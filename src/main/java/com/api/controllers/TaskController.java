@@ -34,8 +34,9 @@ public class TaskController {
         this.userService = userService;
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> saveTask(@Valid @RequestBody TaskDTO taskDTO, BindingResult result) {
+    @PostMapping("/add/{username}")
+    public ResponseEntity<?> saveTask(@RequestParam("username") String username,
+            @Valid @RequestBody TaskDTO taskDTO, BindingResult result) {
 
         if (result.hasErrors()) {
 
@@ -48,7 +49,7 @@ public class TaskController {
 
             throw new TaskManagerApiException(errorMessage.toString(), HttpStatus.BAD_REQUEST);
         } else {
-            User user = userService.getUserByUsername(taskDTO.getUsername());
+            User user = userService.getUserByUsername(username);
             Task newTask = convertToTask(taskDTO);
             newTask.setUser(user);
 
@@ -140,10 +141,11 @@ public class TaskController {
     private TaskDTO convertToTaskDTO(Task task) {
         TaskDTO taskDTO = new TaskDTO();
 
-        taskDTO.setName(task.getName());
+        taskDTO.setId(task.getId());
         taskDTO.setDescription(task.getDescription());
-        taskDTO.setUsername(task.getUser().getUsername());
         taskDTO.setCompleted(task.isCompleted());
+        taskDTO.setName(task.getName());
+        taskDTO.setUserId(task.getUser().getId());
 
         return taskDTO;
     }
