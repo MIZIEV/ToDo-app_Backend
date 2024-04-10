@@ -18,11 +18,11 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class TaskServiceImpl implements TaskService {
 
-    private final TaskRepository todoRepository;
+    private final TaskRepository taskRepository;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository todoRepository) {
-        this.todoRepository = todoRepository;
+    public TaskServiceImpl(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
     }
 
     @Override
@@ -32,20 +32,30 @@ public class TaskServiceImpl implements TaskService {
             throw new EmptyFieldException("EmptyFieldException: Field \"text\" is empty ");
         } else {
             enrichTodo(task);
-            todoRepository.save(task);
+            taskRepository.save(task);
         }
+    }
+
+    @Override
+    public List<Task> getInCompletedTasks(String username) {
+        return taskRepository.findCompletedTaskByUsername(username);
+    }
+
+    @Override
+    public List<Task> getCompletedTasks(String username) {
+        return taskRepository.findInCompletedTaskByUsername(username);
     }
 
     @Override
     @Transactional(readOnly = false)
     public void updateTask(Task editedTask, Long id) {
 
-        Optional<Task> taskForUpdating = todoRepository.findById(id);
+        Optional<Task> taskForUpdating = taskRepository.findById(id);
 
         if (taskForUpdating.isPresent()) {
             taskForUpdating.get().setName(editedTask.getName());
             taskForUpdating.get().setDescription(editedTask.getDescription());
-            todoRepository.save(taskForUpdating.get());
+            taskRepository.save(taskForUpdating.get());
         } else {
             throw new TaskManagerApiException("Task with id - " + id + " not found!", HttpStatus.NOT_FOUND);
         }
@@ -64,25 +74,25 @@ public class TaskServiceImpl implements TaskService {
     @Transactional(readOnly = false)
     public void deleteTask(Long id) {
         Task taskForDelete = getTaskById(id);
-        todoRepository.delete(taskForDelete);
+        taskRepository.delete(taskForDelete);
     }
 
     @Override
     @Transactional(readOnly = false)
     public void deleteAllTasks() {
-        todoRepository.deleteAll();
+        taskRepository.deleteAll();
     }
 
     @Override
     @Transactional(readOnly = false)
     public void deleteCompletedTasks() {
-        List<Task> completedTasks = todoRepository.findAllByIsCompleted(true);
-        todoRepository.deleteAll(completedTasks);
+        List<Task> completedTasks = taskRepository.findAllByIsCompleted(true);
+        taskRepository.deleteAll(completedTasks);
     }
 
     @Override
     public Task getTaskById(Long id) {
-        Optional<Task> task = todoRepository.findById(id);
+        Optional<Task> task = taskRepository.findById(id);
 
         if (task.isPresent()) {
             return task.get();

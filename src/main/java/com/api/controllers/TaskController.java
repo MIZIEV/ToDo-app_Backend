@@ -16,9 +16,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin("*")
 @RestController
@@ -61,37 +61,20 @@ public class TaskController {
 
     @GetMapping("/list/{username}")
     public ResponseEntity<?> getAllInCompletedTask(@PathVariable String username) {
-        User user = userService.getUserByUsername(username);
-
-        List<Task> rawList = user.getTodoList();
-        ArrayList<TaskDTO> readyList = new ArrayList<>();
-
-        if (rawList != null) {
-            for (Task task : rawList) {
-                readyList.add(convertToTaskDTO(task));
-            }
-        } else {
-            return null;
-        }
-
-        return new ResponseEntity<>(readyList.stream().filter(taskDTO -> !taskDTO.isCompleted()).toList(), HttpStatus.OK);
+        List<Task> completedTasks = taskService.getCompletedTasks(username);
+        List<TaskDTO> taskDTOs = completedTasks.stream()
+                .map(this::convertToTaskDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(taskDTOs, HttpStatus.OK);
     }
 
     @GetMapping("/list/completed/{username}")
     public ResponseEntity<?> getAllCompletedTask(@PathVariable String username) {
-        User user = userService.getUserByUsername(username);
-
-        List<Task> rawList = user.getTodoList();
-        ArrayList<TaskDTO> readyList = new ArrayList<>();
-
-        if (rawList != null) {
-            for (Task task : rawList) {
-                readyList.add(convertToTaskDTO(task));
-            }
-        } else {
-            return null;
-        }
-        return new ResponseEntity<>(readyList.stream().filter(TaskDTO::isCompleted).toList(), HttpStatus.OK);
+        List<Task> completedTasks = taskService.getCompletedTasks(username);
+        List<TaskDTO> taskDTOs = completedTasks.stream()
+                .map(this::convertToTaskDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(taskDTOs, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
