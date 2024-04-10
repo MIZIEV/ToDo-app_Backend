@@ -2,8 +2,8 @@ package com.api.controllers;
 
 
 import com.api.dto.RegisterDto;
-import com.api.exception.ErrorResponse;
-import com.api.exception.UserNotFoundException;
+import com.api.util.exception.ErrorResponse;
+import com.api.util.exception.UserNotFoundException;
 import com.api.model.User;
 import com.api.services.UserService;
 import org.modelmapper.ModelMapper;

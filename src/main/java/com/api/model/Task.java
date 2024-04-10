@@ -17,22 +17,18 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "name")
-    //@NotEmpty(message = "Text field mustn't be empty.")
     private String name;
     @Column(name = "description")
     private String description;
     @Column(name = "is_completed")
     private boolean isCompleted;
-    @Column(name = "task_unique_key")
-    //@NotEmpty(message = "Key field mustn't be empty.")
-    private String taskUniqueKey;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-    @OneToMany(mappedBy = "taskOwner")
+    @OneToMany(mappedBy = "taskOwner",cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Todo> todoList;
 
@@ -61,14 +57,6 @@ public class Task {
 
     public void setCompleted(boolean completed) {
         isCompleted = completed;
-    }
-
-    public String getTaskUniqueKey() {
-        return taskUniqueKey;
-    }
-
-    public void setTaskUniqueKey(String todoUniqueKey) {
-        this.taskUniqueKey = todoUniqueKey;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -105,7 +93,7 @@ public class Task {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, isCompleted, taskUniqueKey, createdAt);
+        return Objects.hash(id, name, description, isCompleted, createdAt);
     }
 
     @Override
@@ -117,12 +105,11 @@ public class Task {
                 isCompleted == task.isCompleted &&
                 Objects.equals(name, task.name) &&
                 Objects.equals(description, task.description) &&
-                Objects.equals(taskUniqueKey, task.taskUniqueKey) &&
                 Objects.equals(createdAt, task.createdAt);
     }
 
     @Override
     public String toString() {
-        return id + ") " + name + ", " + description + ", " + isCompleted + ", " + taskUniqueKey + ", " + createdAt;
+        return id + ") " + name + ", " + description + ", " + isCompleted + ", " + createdAt;
     }
 }

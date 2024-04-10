@@ -2,17 +2,13 @@ package com.api.services;
 
 import com.api.model.Todo;
 
-import java.util.List;
-
 public interface TodoService {
 
-    void saveElement(Todo todo);
+    void saveTodo(Todo todo);
 
-    Todo getElementById(Long id);
-
-    List<Todo> elementsList(String todoUniqueKey);
+    Todo getTodoById(Long id);
 
     void changeCompleteStatus(Long id);
 
-    void deleteElement(Long id);
+    void deleteTodo(Long id);
 }

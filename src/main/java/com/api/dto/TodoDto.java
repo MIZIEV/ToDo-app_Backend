@@ -1,5 +1,7 @@
 package com.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 public class TodoDto {
@@ -34,7 +36,7 @@ public class TodoDto {
     public boolean isCompleted() {
         return isCompleted;
     }
-
+    @JsonProperty("isCompleted")
     public void setCompleted(boolean completed) {
         isCompleted = completed;
     }

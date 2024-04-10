@@ -6,21 +6,23 @@ import com.api.model.User;
 import com.api.services.TaskService;
 import com.api.services.impl.TaskServiceImpl;
 import com.api.services.UserService;
-import com.api.exception.EmptyFieldException;
-import com.api.exception.ErrorResponse;
+import com.api.util.exception.TaskManagerApiException;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/task")
 public class TaskController {
 
     private final TaskService taskService;
@@ -32,111 +34,102 @@ public class TaskController {
         this.userService = userService;
     }
 
-    @GetMapping("/tasks/{username}")
-    public List<TaskDTO> getAllInCompletedTodos(@PathVariable String username) {
-        User user = userService.getUserByUsername(username);
+    @PostMapping("/add/{username}")
+    public ResponseEntity<?> saveTask(@PathVariable("username") String username,
+            @Valid @RequestBody TaskDTO taskDTO, BindingResult result) {
 
-        List<Task> rawList = user.getTodoList();
-        ArrayList<TaskDTO> readyList = new ArrayList<>();
+        if (result.hasErrors()) {
 
-        if (rawList != null) {
-            for (Task task : rawList) {
-                readyList.add(convertToTodoDTO(task));
+            StringBuffer errorMessage = new StringBuffer("Validation exception: ");
+
+            for (FieldError fieldError : result.getFieldErrors()) {
+                errorMessage.append(fieldError.getField()).append(": ")
+                        .append(fieldError.getDefaultMessage()).append("; ");
             }
+
+            throw new TaskManagerApiException(errorMessage.toString(), HttpStatus.BAD_REQUEST);
         } else {
-            return null;
+            User user = userService.getUserByUsername(username);
+            Task newTask = convertToTask(taskDTO);
+            newTask.setUser(user);
+
+            taskService.saveNewTask(newTask);
+
+            return new ResponseEntity<>(taskDTO, HttpStatus.CREATED);
         }
-        return readyList.stream().filter(taskDTO -> !taskDTO.isCompleted()).toList();
     }
 
-    @GetMapping("/tasks-completed/{username}")
-    public List<TaskDTO> getAllCompletedTodo(@PathVariable String username) {
-        User user = userService.getUserByUsername(username);
-
-        List<Task> rawList = user.getTodoList();
-        ArrayList<TaskDTO> readyList = new ArrayList<>();
-
-        if (rawList != null) {
-            for (Task task : rawList) {
-                readyList.add(convertToTodoDTO(task));
-            }
-        } else {
-            return null;
-        }
-        return readyList.stream().filter(TaskDTO::isCompleted).toList();
+    @GetMapping("/list/{username}")
+    public ResponseEntity<?> getAllInCompletedTask(@PathVariable String username) {
+        List<Task> completedTasks = taskService.getCompletedTasks(username);
+        List<TaskDTO> taskDTOs = completedTasks.stream()
+                .map(this::convertToTaskDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(taskDTOs, HttpStatus.OK);
     }
 
-    @GetMapping("/task/{taskUniqueKey}")
-    public TaskDTO getTodoByUniqueKey(@PathVariable String taskUniqueKey) {
-        TaskDTO taskDTO = convertToTodoDTO(taskService.getTodoByUniqueKey(taskUniqueKey));
-
-        return taskDTO;
+    @GetMapping("/list/completed/{username}")
+    public ResponseEntity<?> getAllCompletedTask(@PathVariable String username) {
+        List<Task> completedTasks = taskService.getCompletedTasks(username);
+        List<TaskDTO> taskDTOs = completedTasks.stream()
+                .map(this::convertToTaskDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(taskDTOs, HttpStatus.OK);
     }
 
-    @PutMapping("/task/{taskUniqueKey}")
-    public ResponseEntity<HttpStatus> updateTodo(@RequestBody TaskDTO updatedTodo,
-                                                 @PathVariable String taskUniqueKey) {
-        taskService.updateTodo(convertToTodo(updatedTodo), taskUniqueKey);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getTaskById(@PathVariable("id") Long id) {
+        TaskDTO taskDTO = convertToTaskDTO(taskService.getTaskById(id));
 
+        return new ResponseEntity<>(taskDTO, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateTask(@RequestBody TaskDTO updatedTodo,
+                                        @PathVariable("id") Long id) {
+        taskService.updateTask(convertToTask(updatedTodo), id);
+
+        return new ResponseEntity<>("Task with id - " + id + " was updated.", HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<HttpStatus> changeCompletedStatus(@PathVariable("id") Long id) {
+        taskService.changeCompletedStatus(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PatchMapping("/task/complete/{taskUniqueKey}")
-    public ResponseEntity<HttpStatus> changeCompletedStatus(@PathVariable String taskUniqueKey) {
-        taskService.changeCompletedStatus(taskUniqueKey);
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @PostMapping("/add")
-    public ResponseEntity<HttpStatus> saveTodo(@RequestBody TaskDTO taskDTO) {
-
-        User user = userService.getUserByUsername(taskDTO.getUsername());
-        Task newTask = convertToTodo(taskDTO);
-        newTask.setUser(user);
-
-        taskService.saveNewTodo(newTask);
-
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @DeleteMapping("/task/{taskUniqueKey}")
-    public ResponseEntity<HttpStatus> deleteTodo(@PathVariable String taskUniqueKey) {
-        taskService.deleteTodo(taskUniqueKey);
-        return ResponseEntity.ok(HttpStatus.OK);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteTask(@PathVariable("id") Long id) {
+        taskService.deleteTask(id);
+        return new ResponseEntity<>("Task with id - " + id + " was deleted successfully!", HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/tasks/delete")
-    public ResponseEntity<HttpStatus> deleteAllTodos() {
-        taskService.deleteAllTodos();
+    public ResponseEntity<HttpStatus> deleteAllTasks() {
+        taskService.deleteAllTasks();
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/tasks/delete_completed")
-    public ResponseEntity<HttpStatus> deleteCompletedTodo() {
-        taskService.deleteCompletedTodo();
+    public ResponseEntity<HttpStatus> deleteCompletedTasks() {
+        taskService.deleteCompletedTasks();
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    private Task convertToTodo(TaskDTO taskDTO) {
+    private Task convertToTask(TaskDTO taskDTO) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(taskDTO, Task.class);
     }
 
-    private TaskDTO convertToTodoDTO(Task task) {
+    private TaskDTO convertToTaskDTO(Task task) {
         TaskDTO taskDTO = new TaskDTO();
 
-        taskDTO.setName(task.getName());
+        taskDTO.setId(task.getId());
         taskDTO.setDescription(task.getDescription());
-        taskDTO.setUsername(task.getUser().getUsername());
         taskDTO.setCompleted(task.isCompleted());
-        taskDTO.setTaskUniqueKey(task.getTaskUniqueKey());
+        taskDTO.setName(task.getName());
+        taskDTO.setUserId(task.getUser().getId());
 
         return taskDTO;
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(EmptyFieldException exception) {
-        ErrorResponse response = new ErrorResponse("Text field mustn't be empty!", LocalDateTime.now());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
