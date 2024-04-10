@@ -33,12 +33,12 @@ public class TodoController {
                                                   @RequestBody TodoDto todoDto) {
 
         Task ownerTask = todoServiceImpl.getTaskById(id);
-        Todo todo = convertToTodoElement(todoDto);
+        Todo todo = convertToTodo(todoDto);
         todo.setTodoOwner(ownerTask);
 
         todoService.saveTodo(todo);
 
-        return new ResponseEntity<>(todo,HttpStatus.CREATED);
+        return new ResponseEntity<>(convertToTodoDto(todo),HttpStatus.CREATED);
     }
 
     @GetMapping("/list")
@@ -47,7 +47,7 @@ public class TodoController {
         List<TodoDto> readyList = new ArrayList<>();
 
         for (Todo todo : rawList) {
-            readyList.add(convertToTodoElementDto(todo));
+            readyList.add(convertToTodoDto(todo));
         }
         return new ResponseEntity<>(readyList,HttpStatus.OK);
     }
@@ -66,12 +66,12 @@ public class TodoController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    private Todo convertToTodoElement(TodoDto todoDto) {
+    private Todo convertToTodo(TodoDto todoDto) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(todoDto, Todo.class);
     }
 
-    private TodoDto convertToTodoElementDto(Todo todo) {
+    private TodoDto convertToTodoDto(Todo todo) {
         ModelMapper modelMapper = new ModelMapper();
 
         return modelMapper.map(todo, TodoDto.class);
