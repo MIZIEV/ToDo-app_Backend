@@ -109,7 +109,7 @@ public class TaskController {
         return new ResponseEntity<>("Task with id - " + id + " was updated.", HttpStatus.OK);
     }
 
-    @PatchMapping("/complete/{id}")
+    @PatchMapping("/{id}/complete")
     public ResponseEntity<HttpStatus> changeCompletedStatus(@PathVariable("id") Long id) {
         taskService.changeCompletedStatus(id);
         return ResponseEntity.ok(HttpStatus.OK);
