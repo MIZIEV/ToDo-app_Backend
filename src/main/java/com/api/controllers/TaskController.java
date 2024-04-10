@@ -35,7 +35,7 @@ public class TaskController {
     }
 
     @PostMapping("/add/{username}")
-    public ResponseEntity<?> saveTask(@RequestParam("username") String username,
+    public ResponseEntity<?> saveTask(@PathVariable("username") String username,
             @Valid @RequestBody TaskDTO taskDTO, BindingResult result) {
 
         if (result.hasErrors()) {
@@ -77,7 +77,7 @@ public class TaskController {
         return new ResponseEntity<>(readyList.stream().filter(taskDTO -> !taskDTO.isCompleted()).toList(), HttpStatus.OK);
     }
 
-    @GetMapping("/list-completed/{username}")
+    @GetMapping("/list/completed/{username}")
     public ResponseEntity<?> getAllCompletedTask(@PathVariable String username) {
         User user = userService.getUserByUsername(username);
 
